@@ -11,7 +11,7 @@
   "files": [
     "node-screenshots.win32-arm64-msvc.node"
   ],
-  "license": "MIT",
+  "license": "Apache-2.0 License",
   "engines": {
     "node": ">= 10"
   }
