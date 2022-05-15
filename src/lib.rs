@@ -37,7 +37,10 @@ impl Task for AsyncCapturer {
     let screen_capturer = self.screen_capturer;
     let handle = thread::spawn(move || {
       let image = screen_capturer.capture()?;
-      Some(Buffer::from(image.png()))
+      match image.png() {
+        Ok(buffer) => Some(Buffer::from(buffer)),
+        Err(_) => None,
+      }
     });
 
     let capture_result = match handle.join() {
@@ -98,7 +101,10 @@ impl Screenshots {
   #[napi]
   pub fn capture_sync(&self) -> Option<Buffer> {
     let image = self.screen_capturer.capture()?;
-    Some(Buffer::from(image.png()))
+    match image.png() {
+      Ok(buffer) => Some(Buffer::from(buffer)),
+      Err(_) => None,
+    }
   }
 
   #[napi]

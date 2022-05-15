@@ -1,20 +1,20 @@
 # node-screenshots
 
-A nodejs screenshots library for Mac/Windows/Linux
+Zero-dependent. A native nodejs screenshots library for Mac、Windows、Linux.
 
 ## Support matrix
 
 ### Operating Systems
 
-|                  | node12 | node14 | node16 |
-| ---------------- | ------ | ------ | ------ |
-| Windows x64      | ✓      | ✓      | ✓      |
-| Windows x32      | ✓      | ✓      | ✓      |
-| Windows arm64    | ✓      | ✓      | ✓      |
-| macOS x64        | ✓      | ✓      | ✓      |
-| macOS arm64      | ✓      | ✓      | ✓      |
-| Linux x64 gnu    | ✓      | ✓      | ✓      |
-| Linux x64 musl   | ✓      | ✓      | ✓      |
+| Operating Systems | node12 | node14 | node16 |
+| ----------------- | ------ | ------ | ------ |
+| Windows x64       | ✓      | ✓      | ✓      |
+| Windows x32       | ✓      | ✓      | ✓      |
+| Windows arm64     | ✓      | ✓      | ✓      |
+| macOS x64         | ✓      | ✓      | ✓      |
+| macOS arm64       | ✓      | ✓      | ✓      |
+| Linux x64 gnu     | ✓      | ✓      | ✓      |
+| Linux x64 musl    | ✓      | ✓      | ✓      |
 
 ## example
 
