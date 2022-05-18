@@ -8,7 +8,7 @@ use napi::{
   Task,
 };
 
-use screenshots::ScreenCapturer;
+use screen_capturer::ScreenCapturer;
 use std::thread;
 
 #[napi]
