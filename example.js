@@ -29,9 +29,9 @@ captureAsync.then(data => {
   fs.writeFileSync(`${capturer.id}.png`, data)
 })
 
-console.time('ScrennCapture.all()')
+console.time('Screenshots.all()')
 let all = Screenshots.all()
-console.timeEnd('ScrennCapture.all()')
+console.timeEnd('Screenshots.all()')
 
 all.forEach(capturer => {
   // capturer.captureSync()
