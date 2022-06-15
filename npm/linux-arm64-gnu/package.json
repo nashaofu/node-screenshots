@@ -1,21 +1,21 @@
 {
-  "name": "node-screenshots-linux-x64-musl",
+  "name": "node-screenshots-linux-arm64-gnu",
   "version": "0.0.0",
   "os": [
     "linux"
   ],
   "cpu": [
-    "x64"
+    "arm64"
   ],
-  "main": "node-screenshots.linux-x64-musl.node",
+  "main": "node-screenshots.linux-arm64-gnu.node",
   "files": [
-    "node-screenshots.linux-x64-musl.node"
+    "node-screenshots.linux-arm64-gnu.node"
   ],
   "license": "Apache-2.0",
   "engines": {
     "node": ">= 10"
   },
   "libc": [
-    "musl"
+    "glibc"
   ]
 }

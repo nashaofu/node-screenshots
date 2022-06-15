@@ -12,8 +12,8 @@ export class Screenshots {
   scale: number
   rotation: number
   static all(): Array<Screenshots>
-  static fromDisplay(id: number): Screenshots | undefined | null
-  static fromPoint(x: number, y: number): Screenshots | undefined | null
-  captureSync(): Buffer | undefined | null
+  static fromDisplay(id: number): Screenshots | null
+  static fromPoint(x: number, y: number): Screenshots | null
+  captureSync(): Buffer | null
   capture(): Promise<Buffer>
 }

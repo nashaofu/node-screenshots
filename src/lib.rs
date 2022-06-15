@@ -8,13 +8,13 @@ use napi::{
   Task,
 };
 
-use screenshots::ScreenCapturer;
+use screenshots::Screen;
 use std::thread;
 
 #[napi]
 #[derive(Debug)]
 pub struct Screenshots {
-  screen_capturer: ScreenCapturer,
+  screen: Screen,
   pub id: u32,
   pub x: i32,
   pub y: i32,
@@ -24,23 +24,20 @@ pub struct Screenshots {
   pub rotation: f64,
 }
 
-pub struct AsyncCapturer {
-  screen_capturer: ScreenCapturer,
+pub struct AsyncCapture {
+  screen: Screen,
 }
 
 #[napi]
-impl Task for AsyncCapturer {
+impl Task for AsyncCapture {
   type Output = Buffer;
   type JsValue = Buffer;
 
   fn compute(&mut self) -> Result<Self::Output> {
-    let screen_capturer = self.screen_capturer;
+    let screen = self.screen;
     let handle = thread::spawn(move || {
-      let image = screen_capturer.capture()?;
-      match image.png() {
-        Ok(buffer) => Some(Buffer::from(buffer)),
-        Err(_) => None,
-      }
+      let image = screen.capture()?;
+      Some(Buffer::from(image.buffer().clone()))
     });
 
     let capture_result = match handle.join() {
@@ -61,56 +58,50 @@ impl Task for AsyncCapturer {
 
 #[napi]
 impl Screenshots {
-  fn new(screen_capturer: ScreenCapturer) -> Self {
-    let display_info = screen_capturer.display_info;
+  fn new(screen: Screen) -> Self {
     Screenshots {
-      screen_capturer,
-      id: display_info.id,
-      x: display_info.x,
-      y: display_info.y,
-      width: display_info.width,
-      height: display_info.height,
-      scale: display_info.scale as f64,
-      rotation: display_info.rotation as f64,
+      screen,
+      id: screen.id,
+      x: screen.x,
+      y: screen.y,
+      width: screen.width,
+      height: screen.height,
+      scale: screen.scale as f64,
+      rotation: screen.rotation as f64,
     }
   }
   #[napi]
   pub fn all() -> Vec<Screenshots> {
-    ScreenCapturer::all()
+    Screen::all()
       .iter()
-      .map(|&screen_capturer| Screenshots::new(screen_capturer))
+      .map(|&screen| Screenshots::new(screen))
       .collect()
   }
 
   #[napi]
   pub fn from_display(id: u32) -> Option<Screenshots> {
-    let screen_capturers = ScreenCapturer::all();
-    let screen_capturer = screen_capturers
-      .iter()
-      .find(|capturer| capturer.display_info.id == id)?;
+    let screens = Screen::all();
+    let screen = screens.iter().find(|screen| screen.id == id)?;
 
-    Some(Screenshots::new(*screen_capturer))
+    Some(Screenshots::new(*screen))
   }
 
   #[napi]
   pub fn from_point(x: i32, y: i32) -> Option<Screenshots> {
-    let screen_capturer = ScreenCapturer::from_point(x, y)?;
-    Some(Screenshots::new(screen_capturer))
+    let screen = Screen::from_point(x, y)?;
+    Some(Screenshots::new(screen))
   }
 
   #[napi]
   pub fn capture_sync(&self) -> Option<Buffer> {
-    let image = self.screen_capturer.capture()?;
-    match image.png() {
-      Ok(buffer) => Some(Buffer::from(buffer)),
-      Err(_) => None,
-    }
+    let image = self.screen.capture()?;
+    Some(Buffer::from(image.buffer().clone()))
   }
 
   #[napi]
-  pub fn capture(&self) -> AsyncTask<AsyncCapturer> {
-    AsyncTask::new(AsyncCapturer {
-      screen_capturer: self.screen_capturer,
+  pub fn capture(&self) -> AsyncTask<AsyncCapture> {
+    AsyncTask::new(AsyncCapture {
+      screen: self.screen,
     })
   }
 }
