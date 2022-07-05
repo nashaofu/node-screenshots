@@ -1,6 +1,6 @@
 {
   "name": "node-screenshots",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "main": "index.js",
   "types": "index.d.ts",
   "scripts": {
@@ -16,8 +16,6 @@
     "triples": {
       "additional": [
         "aarch64-apple-darwin",
-        "aarch64-unknown-linux-gnu",
-        "aarch64-unknown-linux-musl",
         "aarch64-pc-windows-msvc",
         "x86_64-unknown-linux-musl",
         "i686-pc-windows-msvc"
