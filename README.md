@@ -16,6 +16,22 @@ Zero-dependent. A native nodejs screenshots library for Mac、Windows、Linux.
 | Linux x64 gnu     | ✓      | ✓      | ✓      |
 | Linux x64 musl    | ✓      | ✓      | ✓      |
 
+## Requirements
+
+- debian/ubuntu:
+
+```sh
+apt-get update
+apt-get install libx11 libxrandr libdbus-1
+```
+
+- alpine
+
+```sh
+apk update
+apk add libx11 libxrandr dbus
+```
+
 ## example
 
 ```ts
