@@ -20,12 +20,14 @@ pub struct Screenshots {
   pub y: i32,
   pub width: u32,
   pub height: u32,
-  pub scale: f64,
   pub rotation: f64,
+  pub scale_factor: f64,
+  pub is_primary: bool,
 }
 
 pub struct AsyncCapture {
   screen: Screen,
+  area: Option<(i32, i32, u32, u32)>,
 }
 
 #[napi]
@@ -34,9 +36,14 @@ impl Task for AsyncCapture {
   type JsValue = Buffer;
 
   fn compute(&mut self) -> Result<Self::Output> {
-    let screen = self.screen;
+    let AsyncCapture { screen, area } = *self;
     let handle = thread::spawn(move || {
-      let image = screen.capture()?;
+      let image = if let Some((x, y, width, height)) = area {
+        screen.capture_area(x, y, width, height)?
+      } else {
+        screen.capture()?
+      };
+      
       Some(Buffer::from(image.buffer().clone()))
     });
 
@@ -66,8 +73,9 @@ impl Screenshots {
       y: screen.y,
       width: screen.width,
       height: screen.height,
-      scale: screen.scale as f64,
       rotation: screen.rotation as f64,
+      scale_factor: screen.scale_factor as f64,
+      is_primary: screen.is_primary,
     }
   }
   #[napi]
@@ -102,6 +110,21 @@ impl Screenshots {
   pub fn capture(&self) -> AsyncTask<AsyncCapture> {
     AsyncTask::new(AsyncCapture {
       screen: self.screen,
+      area: None,
+    })
+  }
+
+  #[napi]
+  pub fn capture_area_sync(&self, x: i32, y: i32, width: u32, height: u32) -> Option<Buffer> {
+    let image = self.screen.capture_area(x, y, width, height)?;
+    Some(Buffer::from(image.buffer().clone()))
+  }
+
+  #[napi]
+  pub fn capture_area(&self, x: i32, y: i32, width: u32, height: u32) -> AsyncTask<AsyncCapture> {
+    AsyncTask::new(AsyncCapture {
+      screen: self.screen,
+      area: Some((x, y, width, height)),
     })
   }
 }

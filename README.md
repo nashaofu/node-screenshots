@@ -70,6 +70,11 @@ all.forEach(capturer => {
 
 // 从屏幕id获取截图，id可以通过 `Screenshots.all()` 获取，也可以通过electron的 `screen.getAllDisplays()` 获取
 let sc = Screenshots.fromDisplay(71)
+
+// 截取屏幕的一部分区域
+sc.captureArea(300, 300, 300, 300).then(buffer => {
+  fs.writeFileSync(`captureArea-${capturer.id}.png`, buffer)
+})
 ```
 
 ## API
@@ -79,3 +84,5 @@ let sc = Screenshots.fromDisplay(71)
 - `Screenshots.all()`: 获取所有屏幕
 - `screenshots.capture()`: 异步截图
 - `screenshots.captureSync()`: 同步截图
+- `screenshots.captureArea(x, y, width, height)`: 异步截图
+- `screenshots.captureAreaSync(x, y, width, height)`: 同步截图

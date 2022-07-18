@@ -9,11 +9,14 @@ export class Screenshots {
   y: number
   width: number
   height: number
-  scale: number
   rotation: number
+  scaleFactor: number
+  isPrimary: boolean
   static all(): Array<Screenshots>
   static fromDisplay(id: number): Screenshots | null
   static fromPoint(x: number, y: number): Screenshots | null
   captureSync(): Buffer | null
   capture(): Promise<Buffer>
+  captureAreaSync(x: number, y: number, width: number, height: number): Buffer | null
+  captureArea(x: number, y: number, width: number, height: number): Promise<Buffer>
 }

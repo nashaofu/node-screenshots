@@ -41,7 +41,12 @@ all.forEach(capturer => {
     y: capturer.y,
     width: capturer.width,
     height: capturer.height,
-    scale: capturer.scale,
-    rotation: capturer.rotation
+    rotation: capturer.rotation,
+    scaleFactor: capturer.scaleFactor,
+    isPrimary: capturer.isPrimary
   })
+})
+
+capturer.captureArea(300, 300, 300, 300).then(buffer => {
+  fs.writeFileSync(`captureArea-${capturer.id}.png`, buffer)
 })
