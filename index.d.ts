@@ -12,7 +12,7 @@ export class Screenshots {
   rotation: number
   scaleFactor: number
   isPrimary: boolean
-  static all(): Array<Screenshots>
+  static all(): Array<Screenshots> | null
   static fromDisplay(id: number): Screenshots | null
   static fromPoint(x: number, y: number): Screenshots | null
   captureSync(): Buffer | null

@@ -16,22 +16,6 @@ Zero-dependent. A native nodejs screenshots library for Mac、Windows、Linux.
 | Linux x64 gnu     | ✓      | ✓      | ✓      |
 | Linux x64 musl    | ✓      | ✓      | ✓      |
 
-## Requirements
-
-- debian/ubuntu:
-
-```sh
-apt-get update
-apt-get install libx11 libxrandr libdbus-1
-```
-
-- alpine
-
-```sh
-apk update
-apk add libx11 libxrandr dbus
-```
-
 ## example
 
 ```ts
@@ -53,7 +37,7 @@ capturer.capture().then(data => {
 })
 
 // 获取所有屏幕截图
-let all = Screenshots.all()
+let all = Screenshots.all() ?? []
 
 all.forEach(capturer => {
   console.log({
@@ -62,8 +46,9 @@ all.forEach(capturer => {
     y: capturer.y,
     width: capturer.width,
     height: capturer.height,
-    scale: capturer.scale,
-    rotation: capturer.rotation
+    rotation: capturer.rotation,
+    scaleFactor: capturer.scaleFactor,
+    isPrimary: capturer.isPrimary
   })
   capturer.captureSync()
 })
@@ -82,7 +67,23 @@ sc.captureArea(300, 300, 300, 300).then(buffer => {
 - `Screenshots.fromPoint(x, y)`: 从指定坐标获取屏幕
 - `Screenshots.fromDisplay(displayId)`: 从屏幕 id 获取屏幕
 - `Screenshots.all()`: 获取所有屏幕
-- `screenshots.capture()`: 异步截图
-- `screenshots.captureSync()`: 同步截图
-- `screenshots.captureArea(x, y, width, height)`: 异步截图
-- `screenshots.captureAreaSync(x, y, width, height)`: 同步截图
+- `screenshots.capture()`: 异步截取全屏
+- `screenshots.captureSync()`: 同步截取全屏
+- `screenshots.captureArea(x, y, width, height)`: 异步截取屏幕指定区域
+- `screenshots.captureAreaSync(x, y, width, height)`: 同步截取屏幕指定区域
+
+## Linux requirements
+
+On Linux, you need to install `libxcb`、`libxrandr`、`dbus`
+
+Debian/Ubuntu:
+
+```sh
+apt-get install libxcb1 libxrandr2 libdbus-1-3
+```
+
+Alpine:
+
+```sh
+apk add libxcb libxrandr dbus
+```
