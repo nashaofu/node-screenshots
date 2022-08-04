@@ -43,7 +43,7 @@ impl Task for AsyncCapture {
       } else {
         screen.capture()?
       };
-      
+
       Some(Buffer::from(image.buffer().clone()))
     });
 
@@ -65,39 +65,40 @@ impl Task for AsyncCapture {
 
 #[napi]
 impl Screenshots {
-  fn new(screen: Screen) -> Self {
+  fn new(screen: &Screen) -> Self {
+    let display_info = screen.display_info;
+
     Screenshots {
-      screen,
-      id: screen.id,
-      x: screen.x,
-      y: screen.y,
-      width: screen.width,
-      height: screen.height,
-      rotation: screen.rotation as f64,
-      scale_factor: screen.scale_factor as f64,
-      is_primary: screen.is_primary,
+      screen: *screen,
+      id: display_info.id,
+      x: display_info.x,
+      y: display_info.y,
+      width: display_info.width,
+      height: display_info.height,
+      rotation: display_info.rotation as f64,
+      scale_factor: display_info.scale_factor as f64,
+      is_primary: display_info.is_primary,
     }
   }
   #[napi]
-  pub fn all() -> Vec<Screenshots> {
-    Screen::all()
-      .iter()
-      .map(|&screen| Screenshots::new(screen))
-      .collect()
+  pub fn all() -> Option<Vec<Screenshots>> {
+    let screens = Screen::all()?.iter().map(Screenshots::new).collect();
+
+    Some(screens)
   }
 
   #[napi]
   pub fn from_display(id: u32) -> Option<Screenshots> {
-    let screens = Screen::all();
-    let screen = screens.iter().find(|screen| screen.id == id)?;
+    let screens = Screen::all()?;
+    let screen = screens.iter().find(|screen| screen.display_info.id == id)?;
 
-    Some(Screenshots::new(*screen))
+    Some(Screenshots::new(screen))
   }
 
   #[napi]
   pub fn from_point(x: i32, y: i32) -> Option<Screenshots> {
     let screen = Screen::from_point(x, y)?;
-    Some(Screenshots::new(screen))
+    Some(Screenshots::new(&screen))
   }
 
   #[napi]
