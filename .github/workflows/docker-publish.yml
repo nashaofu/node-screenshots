@@ -17,20 +17,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        settings:
-          - platform: alpine
-            node: 14
-          - platform: alpine
-            node: 16
-          - platform: alpine
-            node: 18
-          - platform: slim
-            node: 14
-          - platform: slim
-            node: 16
-          - platform: slim
-            node: 18
-    name: build node-desktop:${{ matrix.settings.node }}-${{ matrix.settings.platform }}
+        platform:
+          - alpine
+          - slim
+        node:
+          - 14
+          - 16
+          - 18
+    name: build node-desktop:${{ matrix.node }}-${{ matrix.platform }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -59,9 +53,9 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: ./docker
-          file: ./docker/${{ matrix.settings.platform }}.Dockerfile
+          file: ./docker/${{ matrix.platform }}.Dockerfile
           push: ${{ github.event_name != 'pull_request' }}
           build-args: |
-            VERSION=${{ matrix.settings.node }}
-          tags: ${{ env.REGISTRY }}/${{ github.repository }}/node-desktop:${{ matrix.settings.node }}-${{ matrix.settings.platform }}
+            VERSION=${{ matrix.node }}
+          tags: ${{ env.REGISTRY }}/${{ github.repository }}/node-desktop:${{ matrix.node }}-${{ matrix.platform }}
           labels: ${{ steps.meta.outputs.labels }}
