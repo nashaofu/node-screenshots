@@ -1,8 +1,12 @@
 {
   "name": "node-screenshots",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "main": "index.js",
   "types": "index.d.ts",
+  "files": [
+    "index.js",
+    "index.d.ts"
+  ],
   "scripts": {
     "artifacts": "napi artifacts",
     "build": "napi build --platform --release",
