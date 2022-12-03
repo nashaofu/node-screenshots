@@ -32,7 +32,7 @@
   },
   "packageManager": "yarn@3.2.1",
   "devDependencies": {
-    "@napi-rs/cli": "^2.11.4",
-    "ava": "^4.3.0"
+    "@napi-rs/cli": "^2.13.0",
+    "ava": "^5.1.0"
   }
 }

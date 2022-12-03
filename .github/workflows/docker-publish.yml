@@ -1,6 +1,7 @@
-name: Docker
+name: docker-publish
 
 on:
+  workflow_dispatch: # 手动触发
   push:
     branches: ['master']
     # Publish semver tags as releases.

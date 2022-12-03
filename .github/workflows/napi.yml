@@ -1,4 +1,4 @@
-name: CI
+name: napi
 env:
   DEBUG: napi:*
   APP_NAME: node-screenshots
