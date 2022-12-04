@@ -4,11 +4,11 @@
 extern crate napi_derive;
 
 use napi::{
-  bindgen_prelude::{AsyncTask, Buffer, Error, Result},
-  Task,
+  bindgen_prelude::{AsyncTask, Error, Result},
+  Env, JsBuffer, Task,
 };
 
-use screenshots::Screen;
+use screenshots::{Image, Screen};
 use std::thread;
 
 #[napi]
@@ -32,8 +32,8 @@ pub struct AsyncCapture {
 
 #[napi]
 impl Task for AsyncCapture {
-  type Output = Buffer;
-  type JsValue = Buffer;
+  type Output = Image;
+  type JsValue = JsBuffer;
 
   fn compute(&mut self) -> Result<Self::Output> {
     let AsyncCapture { screen, area } = *self;
@@ -44,22 +44,23 @@ impl Task for AsyncCapture {
         screen.capture()?
       };
 
-      Some(Buffer::from(image.buffer().clone()))
+      Some(image)
     });
 
-    let capture_result = match handle.join() {
+    let capture_image = match handle.join() {
       Ok(result) => result,
       Err(_) => None,
     };
 
-    match capture_result {
-      Some(buffer) => Ok(buffer),
+    match capture_image {
+      Some(image) => Ok(image),
       None => Err(Error::from_reason(String::from("Capture failed"))),
     }
   }
 
-  fn resolve(&mut self, _env: napi::Env, output: Self::Output) -> Result<Self::JsValue> {
-    Ok(output)
+  fn resolve(&mut self, env: Env, output: Self::Output) -> Result<Self::JsValue> {
+    let buffer = env.create_buffer_copy(output.buffer())?;
+    Ok(buffer.into_raw())
   }
 }
 
@@ -102,9 +103,10 @@ impl Screenshots {
   }
 
   #[napi]
-  pub fn capture_sync(&self) -> Option<Buffer> {
+  pub fn capture_sync(&self, env: Env) -> Option<JsBuffer> {
     let image = self.screen.capture()?;
-    Some(Buffer::from(image.buffer().clone()))
+    let buffer = env.create_buffer_copy(image.buffer()).ok()?;
+    Some(buffer.into_raw())
   }
 
   #[napi]
@@ -116,9 +118,17 @@ impl Screenshots {
   }
 
   #[napi]
-  pub fn capture_area_sync(&self, x: i32, y: i32, width: u32, height: u32) -> Option<Buffer> {
+  pub fn capture_area_sync(
+    &self,
+    env: Env,
+    x: i32,
+    y: i32,
+    width: u32,
+    height: u32,
+  ) -> Option<JsBuffer> {
     let image = self.screen.capture_area(x, y, width, height)?;
-    Some(Buffer::from(image.buffer().clone()))
+    let buffer = env.create_buffer_copy(image.buffer()).ok()?;
+    Some(buffer.into_raw())
   }
 
   #[napi]
