@@ -6,7 +6,7 @@ Zero-dependent. A native nodejs screenshots library for Mac、Windows、Linux.
 
 ### Operating Systems
 
-| Operating Systems | node12 | node14 | node16 |
+| Operating Systems | node14 | node16 | node18 |
 | ----------------- | ------ | ------ | ------ |
 | Windows x64       | ✓      | ✓      | ✓      |
 | Windows x32       | ✓      | ✓      | ✓      |
