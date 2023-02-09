@@ -17,11 +17,6 @@ test('Screenshots.fromPoint(-10, -10)', t => {
   t.true(screenshots === null)
 })
 
-test('Screenshots.fromDisplay(0)', t => {
-  let screenshots = Screenshots.fromDisplay(0)
-  t.true(screenshots === null)
-})
-
 test('screenshots.capture()', async t => {
   let screenshots = Screenshots.fromPoint(100, 100)
   let buffer = await screenshots.capture()

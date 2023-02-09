@@ -39,23 +39,21 @@ impl Task for AsyncCapture {
     let AsyncCapture { screen, area } = *self;
     let handle = thread::spawn(move || {
       let image = if let Some((x, y, width, height)) = area {
-        screen.capture_area(x, y, width, height)?
+        screen
+          .capture_area(x, y, width, height)
+          .map_err(|e| Error::from_reason(e.to_string()))?
       } else {
-        screen.capture()?
+        screen
+          .capture()
+          .map_err(|e| Error::from_reason(e.to_string()))?
       };
 
-      Some(image)
+      Ok(image)
     });
 
-    let capture_image = match handle.join() {
-      Ok(result) => result,
-      Err(_) => None,
-    };
-
-    match capture_image {
-      Some(image) => Ok(image),
-      None => Err(Error::from_reason(String::from("Capture failed"))),
-    }
+    handle
+      .join()
+      .map_err(|_| Error::from_reason(String::from("Async Capture failed")))?
   }
 
   fn resolve(&mut self, env: Env, output: Self::Output) -> Result<Self::JsValue> {
@@ -82,31 +80,32 @@ impl Screenshots {
     }
   }
   #[napi]
-  pub fn all() -> Option<Vec<Screenshots>> {
-    let screens = Screen::all()?.iter().map(Screenshots::new).collect();
+  pub fn all() -> Result<Vec<Screenshots>> {
+    let screens = Screen::all()
+      .map_err(|e| Error::from_reason(e.to_string()))?
+      .iter()
+      .map(Screenshots::new)
+      .collect();
 
-    Some(screens)
-  }
-
-  #[napi]
-  pub fn from_display(id: u32) -> Option<Screenshots> {
-    let screens = Screen::all()?;
-    let screen = screens.iter().find(|screen| screen.display_info.id == id)?;
-
-    Some(Screenshots::new(screen))
+    Ok(screens)
   }
 
   #[napi]
   pub fn from_point(x: i32, y: i32) -> Option<Screenshots> {
-    let screen = Screen::from_point(x, y)?;
+    let screen = Screen::from_point(x, y).ok()?;
+
     Some(Screenshots::new(&screen))
   }
 
   #[napi]
-  pub fn capture_sync(&self, env: Env) -> Option<JsBuffer> {
-    let image = self.screen.capture()?;
-    let buffer = env.create_buffer_copy(image.buffer()).ok()?;
-    Some(buffer.into_raw())
+  pub fn capture_sync(&self, env: Env) -> Result<JsBuffer> {
+    let image = self
+      .screen
+      .capture()
+      .map_err(|e| Error::from_reason(e.to_string()))?;
+    let buffer = env.create_buffer_copy(image.buffer())?;
+
+    Ok(buffer.into_raw())
   }
 
   #[napi]
@@ -125,10 +124,14 @@ impl Screenshots {
     y: i32,
     width: u32,
     height: u32,
-  ) -> Option<JsBuffer> {
-    let image = self.screen.capture_area(x, y, width, height)?;
-    let buffer = env.create_buffer_copy(image.buffer()).ok()?;
-    Some(buffer.into_raw())
+  ) -> Result<JsBuffer> {
+    let image = self
+      .screen
+      .capture_area(x, y, width, height)
+      .map_err(|e| Error::from_reason(e.to_string()))?;
+    let buffer = env.create_buffer_copy(image.buffer())?;
+
+    Ok(buffer.into_raw())
   }
 
   #[napi]

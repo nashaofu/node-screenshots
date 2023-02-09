@@ -15,7 +15,7 @@ console.time('captureSync')
 let image = capturer.captureSync()
 console.timeEnd('captureSync')
 console.log(image)
-fs.writeFileSync('./a.png', image)
+fs.writeFileSync('./temp-a.png', image)
 
 console.time('captureAsync')
 console.time('captureAsync task')
@@ -26,7 +26,7 @@ console.log('captureAsync', captureAsync)
 captureAsync.then(data => {
   console.timeEnd('captureAsync task')
   console.log(data)
-  fs.writeFileSync(`${capturer.id}.png`, data)
+  fs.writeFileSync(`temp-${capturer.id}.png`, data)
 })
 
 console.time('Screenshots.all()')
@@ -48,5 +48,5 @@ all.forEach(capturer => {
 })
 
 capturer.captureArea(300, 300, 300, 300).then(buffer => {
-  fs.writeFileSync(`captureArea-${capturer.id}.png`, buffer)
+  fs.writeFileSync(`temp-captureArea-${capturer.id}.png`, buffer)
 })

@@ -1,6 +1,6 @@
 {
   "name": "node-screenshots",
-  "version": "0.0.14",
+  "version": "0.1.0",
   "main": "index.js",
   "types": "index.d.ts",
   "files": [
@@ -13,6 +13,7 @@
     "build:debug": "napi build --platform",
     "prepublishOnly": "napi prepublish -t npm",
     "test": "ava",
+    "universal": "napi universal",
     "version": "napi version"
   },
   "napi": {
@@ -32,7 +33,7 @@
   },
   "packageManager": "yarn@3.2.1",
   "devDependencies": {
-    "@napi-rs/cli": "^2.13.0",
-    "ava": "^5.1.0"
+    "@napi-rs/cli": "^2.14.7",
+    "ava": "^5.2.0"
   }
 }
