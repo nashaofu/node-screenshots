@@ -12,12 +12,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@napi-rs/cli@npm:^2.14.7":
-  version: 2.14.7
-  resolution: "@napi-rs/cli@npm:2.14.7"
+"@napi-rs/cli@npm:^2.15.2":
+  version: 2.15.2
+  resolution: "@napi-rs/cli@npm:2.15.2"
   bin:
     napi: scripts/index.js
-  checksum: edb2a153d10ab960ae99c3983246f42ba3b4ada876efc3b00feccf1e81eca22dd12e5232f27c7d6d32693af1459fe3786ec560f2dd24c19ce87b1b2e6cdc6cad
+  checksum: dedcbd339f634e4a4c442febbfaee7c0fd907f3b8082c1f3ddba18b0e02ae2f0e4bff75688763669db5fb1a0f5ab26a7200cb6c01fe8825effd0a70a44bcbbc7
   languageName: node
   linkType: hard
 
@@ -225,7 +225,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ava@npm:^5.2.0":
+"ava@npm:^5.1.1":
   version: 5.2.0
   resolution: "ava@npm:5.2.0"
   dependencies:
@@ -796,7 +796,7 @@ __metadata:
 
 "fsevents@patch:fsevents@~2.3.2#~builtin<compat/fsevents>":
   version: 2.3.2
-  resolution: "fsevents@patch:fsevents@npm%3A2.3.2#~builtin<compat/fsevents>::version=2.3.2&hash=18f3a7"
+  resolution: "fsevents@patch:fsevents@npm%3A2.3.2#~builtin<compat/fsevents>::version=2.3.2&hash=df0bf1"
   dependencies:
     node-gyp: latest
   conditions: os=darwin
@@ -1408,8 +1408,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "node-screenshots@workspace:."
   dependencies:
-    "@napi-rs/cli": ^2.14.7
-    ava: ^5.2.0
+    "@napi-rs/cli": ^2.15.2
+    ava: ^5.1.1
   languageName: unknown
   linkType: soft
 
