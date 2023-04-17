@@ -1,45 +1,47 @@
-# node-screenshots
+# 📸 node-screenshots
 
-Zero-dependent. A native nodejs screenshots library for Mac、Windows、Linux.
+`node-screenshots` is a native node.js screenshot library that supports Mac, Windows, and Linux systems without any dependencies.
 
-## Support matrix
+English | [简体中文](README-zh_CN.md)
 
-### Operating Systems
+## Support Matrix
 
-| Operating Systems | node14 | node16 | node18 |
-| ----------------- | ------ | ------ | ------ |
-| Windows x64       | ✓      | ✓      | ✓      |
-| Windows x32       | ✓      | ✓      | ✓      |
-| Windows arm64     | ✓      | ✓      | ✓      |
-| macOS x64         | ✓      | ✓      | ✓      |
-| macOS arm64       | ✓      | ✓      | ✓      |
-| Linux x64 gnu     | ✓      | ✓      | ✓      |
-| Linux x64 musl    | ✓      | ✓      | ✓      |
+### Operating System
 
-## example
+| Operating System | node14 | node16 | node18 |
+| ---------------- | ------ | ------ | ------ |
+| Windows x64      | ✓      | ✓      | ✓      |
+| Windows x32      | ✓      | ✓      | ✓      |
+| Windows arm64    | ✓      | ✓      | ✓      |
+| macOS x64        | ✓      | ✓      | ✓      |
+| macOS arm64      | ✓      | ✓      | ✓      |
+| Linux x64 gnu    | ✓      | ✓      | ✓      |
+| Linux x64 musl   | ✓      | ✓      | ✓      |
+
+## Example
 
 ```ts
-const fs = require('fs')
-const { Screenshots } = require('node-screenshots')
+const fs = require("fs");
+const { Screenshots } = require("node-screenshots");
 
-let capturer = Screenshots.fromPoint(100, 100)
+let capturer = Screenshots.fromPoint(100, 100);
 
-console.log(capturer, capturer.id)
+console.log(capturer, capturer.id);
 
-// 同步截图
-let image = capturer.captureSync()
-fs.writeFileSync('./a.png', image)
+// Synchronous capture
+let image = capturer.captureSync();
+fs.writeFileSync("./a.png", image);
 
-// 异步获取截图
-capturer.capture().then(data => {
-  console.log(data)
-  fs.writeFileSync(`${capturer.id}.png`, data)
-})
+// Asynchronous capture
+capturer.capture().then((data) => {
+  console.log(data);
+  fs.writeFileSync(`${capturer.id}.png`, data);
+});
 
-// 获取所有屏幕截图
-let all = Screenshots.all() ?? []
+// Get all screen captures
+let all = Screenshots.all() ?? [];
 
-all.forEach(capturer => {
+all.forEach((capturer) => {
   console.log({
     id: capturer.id,
     x: capturer.x,
@@ -48,27 +50,26 @@ all.forEach(capturer => {
     height: capturer.height,
     rotation: capturer.rotation,
     scaleFactor: capturer.scaleFactor,
-    isPrimary: capturer.isPrimary
-  })
-  capturer.captureSync()
-})
-
+    isPrimary: capturer.isPrimary,
+  });
+  capturer.captureSync();
+});
 ```
 
 ## API
 
-- `Screenshots.fromPoint(x, y)`: 从指定坐标获取屏幕
-- `Screenshots.all()`: 获取所有屏幕
-- `screenshots.capture()`: 异步截取全屏
-- `screenshots.captureSync()`: 同步截取全屏
-- `screenshots.captureArea(x, y, width, height)`: 异步截取屏幕指定区域
-- `screenshots.captureAreaSync(x, y, width, height)`: 同步截取屏幕指定区域
+- `Screenshots.fromPoint(x, y)`: Get a screenshot from the specified coordinates
+- `Screenshots.all()`: Get all screenshots
+- `screenshots.capture()`: Asynchronously capture full screen
+- `screenshots.captureSync()`: Synchronously capture full screen
+- `screenshots.captureArea(x, y, width, height)`: Asynchronously capture the specified area
+- `screenshots.captureAreaSync(x, y, width, height)`: Synchronously capture the specified area
 
-## Linux requirements
+## Linux System Requirements
 
-On Linux, you need to install `libxcb`、`libxrandr`、`dbus`
+On Linux, you need to install `libxcb`, `libxrandr`, and `dbus`.
 
-Debian/Ubuntu:
+Debian / Ubuntu:
 
 ```sh
 apt-get install libxcb1 libxrandr2 libdbus-1-3
