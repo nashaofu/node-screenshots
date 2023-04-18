@@ -1,4 +1,4 @@
-ARG VERSION="16"
+ARG VERSION="18"
 
 FROM node:${VERSION}
 
@@ -13,7 +13,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
 COPY debian-init.sh /usr/local/share/debian-init.sh
 
 RUN apt-get update && \
-  apt-get -y install --no-install-recommends \
+  apt-get -y install \
   xvfb \
   fluxbox \
   libxcb1 \

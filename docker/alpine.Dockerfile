@@ -1,4 +1,4 @@
-ARG VERSION="16"
+ARG VERSION="18"
 
 FROM node:${VERSION}-alpine
 
