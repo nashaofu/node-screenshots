@@ -68,28 +68,28 @@ jobs:
               apk add libxcb-dev libxrandr-dev dbus-dev &&
               yarn build &&
               strip *.node
-          - host: ubuntu-latest
-            target: aarch64-unknown-linux-gnu
-            docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-debian-aarch64
-            build: |-
-              set -e &&
-              dpkg --add-architecture arm64 &&
-              apt-get update &&
-              apt-get install libxcb1-dev:arm64 libxrandr-dev:arm64 libdbus-1-dev:arm64 -y &&
-              rustup target add aarch64-unknown-linux-gnu &&
-              rustup toolchain install stable-aarch64-unknown-linux-gnu &&
-              yarn build --target aarch64-unknown-linux-gnu &&
-              aarch64-unknown-linux-gnu-strip *.node
-          - host: ubuntu-latest
-            target: aarch64-unknown-linux-musl
-            docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-alpine
-            build: |-
-              set -e &&
-              apk update &&
-              apk add libxcb-dev libxrandr-dev dbus-dev && \
-              rustup target add aarch64-unknown-linux-musl && \
-              yarn build --target aarch64-unknown-linux-musl &&
-              /aarch64-linux-musl-cross/bin/aarch64-linux-musl-strip *.node
+          # - host: ubuntu-latest
+          #   target: aarch64-unknown-linux-gnu
+          #   docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-debian-aarch64
+          #   build: |-
+          #     set -e &&
+          #     dpkg --add-architecture arm64 &&
+          #     apt-get update &&
+          #     apt-get install libxcb1-dev:arm64 libxrandr-dev:arm64 libdbus-1-dev:arm64 -y &&
+          #     rustup target add aarch64-unknown-linux-gnu &&
+          #     rustup toolchain install stable-aarch64-unknown-linux-gnu &&
+          #     yarn build --target aarch64-unknown-linux-gnu &&
+          #     aarch64-unknown-linux-gnu-strip *.node
+          # - host: ubuntu-latest
+          #   target: aarch64-unknown-linux-musl
+          #   docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-alpine
+          #   build: |-
+          #     set -e &&
+          #     apk update &&
+          #     apk add libxcb-dev libxrandr-dev dbus-dev && \
+          #     rustup target add aarch64-unknown-linux-musl && \
+          #     yarn build --target aarch64-unknown-linux-musl &&
+          #     /aarch64-linux-musl-cross/bin/aarch64-linux-musl-strip *.node
     name: stable - ${{ matrix.settings.target }} - node@18
     runs-on: ${{ matrix.settings.host }}
     steps:
@@ -257,80 +257,80 @@ jobs:
         shell: bash
       - name: Test bindings
         run: docker run --rm -v $(pwd):/build -w /build ghcr.io/nashaofu/node-screenshots/node-desktop:${{ matrix.node }}-alpine yarn test
-  test-linux-aarch64-gnu-binding:
-    name: Test bindings on aarch64-unknown-linux-gnu - node@${{ matrix.node }}
-    needs:
-      - build
-    strategy:
-      fail-fast: false
-      matrix:
-        node:
-          - '14'
-          - '16'
-          - '18'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Download artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: bindings-aarch64-unknown-linux-gnu
-          path: .
-      - name: List packages
-        run: ls -R .
-        shell: bash
-      - name: Install dependencies
-        run: |
-          yarn config set supportedArchitectures.cpu "arm64"
-          yarn config set supportedArchitectures.libc "glibc"
-          yarn install
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
-        with:
-          platforms: arm64
-      - run: docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
-      - name: Setup and run tests
-        uses: addnab/docker-run-action@v3
-        with:
-          image: ghcr.io/nashaofu/node-screenshots/node-desktop:${{ matrix.node }}-slim
-          options: '--platform linux/arm64 -v ${{ github.workspace }}:/build -w /build'
-          run: |
-            set -e
-            yarn test
-            ls -la
-  test-linux-aarch64-musl-binding:
-    name: Test bindings on aarch64-unknown-linux-musl - node@${{ matrix.node }}
-    needs:
-      - build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Download artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: bindings-aarch64-unknown-linux-musl
-          path: .
-      - name: List packages
-        run: ls -R .
-        shell: bash
-      - name: Install dependencies
-        run: |
-          yarn config set supportedArchitectures.cpu "arm64"
-          yarn config set supportedArchitectures.libc "musl"
-          yarn install
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
-        with:
-          platforms: arm64
-      - run: docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
-      - name: Setup and run tests
-        uses: addnab/docker-run-action@v3
-        with:
-          image: ghcr.io/nashaofu/node-screenshots/node-desktop:lts-alpine
-          options: '--platform linux/arm64 -v ${{ github.workspace }}:/build -w /build'
-          run: |
-            set -e
-            yarn test
+  # test-linux-aarch64-gnu-binding:
+  #   name: Test bindings on aarch64-unknown-linux-gnu - node@${{ matrix.node }}
+  #   needs:
+  #     - build
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       node:
+  #         - '14'
+  #         - '16'
+  #         - '18'
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - name: Download artifacts
+  #       uses: actions/download-artifact@v3
+  #       with:
+  #         name: bindings-aarch64-unknown-linux-gnu
+  #         path: .
+  #     - name: List packages
+  #       run: ls -R .
+  #       shell: bash
+  #     - name: Install dependencies
+  #       run: |
+  #         yarn config set supportedArchitectures.cpu "arm64"
+  #         yarn config set supportedArchitectures.libc "glibc"
+  #         yarn install
+  #     - name: Set up QEMU
+  #       uses: docker/setup-qemu-action@v2
+  #       with:
+  #         platforms: arm64
+  #     - run: docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+  #     - name: Setup and run tests
+  #       uses: addnab/docker-run-action@v3
+  #       with:
+  #         image: ghcr.io/nashaofu/node-screenshots/node-desktop:${{ matrix.node }}-slim
+  #         options: '--platform linux/arm64 -v ${{ github.workspace }}:/build -w /build'
+  #         run: |
+  #           set -e
+  #           yarn test
+  #           ls -la
+  # test-linux-aarch64-musl-binding:
+  #   name: Test bindings on aarch64-unknown-linux-musl - node@${{ matrix.node }}
+  #   needs:
+  #     - build
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - name: Download artifacts
+  #       uses: actions/download-artifact@v3
+  #       with:
+  #         name: bindings-aarch64-unknown-linux-musl
+  #         path: .
+  #     - name: List packages
+  #       run: ls -R .
+  #       shell: bash
+  #     - name: Install dependencies
+  #       run: |
+  #         yarn config set supportedArchitectures.cpu "arm64"
+  #         yarn config set supportedArchitectures.libc "musl"
+  #         yarn install
+  #     - name: Set up QEMU
+  #       uses: docker/setup-qemu-action@v2
+  #       with:
+  #         platforms: arm64
+  #     - run: docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+  #     - name: Setup and run tests
+  #       uses: addnab/docker-run-action@v3
+  #       with:
+  #         image: ghcr.io/nashaofu/node-screenshots/node-desktop:lts-alpine
+  #         options: '--platform linux/arm64 -v ${{ github.workspace }}:/build -w /build'
+  #         run: |
+  #           set -e
+  #           yarn test
   universal-macOS:
     name: Build universal macOS binary
     needs:
@@ -371,8 +371,8 @@ jobs:
       - test-macOS-windows-binding
       - test-linux-x64-gnu-binding
       - test-linux-x64-musl-binding
-      - test-linux-aarch64-gnu-binding
-      - test-linux-aarch64-musl-binding
+      # - test-linux-aarch64-gnu-binding
+      # - test-linux-aarch64-musl-binding
       - universal-macOS
     steps:
       - uses: actions/checkout@v3
