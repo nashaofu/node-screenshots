@@ -5,13 +5,13 @@ export DEBIAN_FRONTEND=noninteractive
 # Install noVNC X11 packages
 apt-get update
 apt-get -y install --no-install-recommends \
-    xvfb \
-    fluxbox \
-    x11vnc \
-    novnc \
-    libxcb1-dev \
-    libxrandr-dev \
-    libdbus-1-dev
+  xvfb \
+  fluxbox \
+  x11vnc \
+  novnc \
+  libxcb1-dev \
+  libxrandr-dev \
+  libdbus-1-dev
 
 # Configure noVNC
 cp /usr/share/novnc/vnc.html /usr/share/novnc/index.html

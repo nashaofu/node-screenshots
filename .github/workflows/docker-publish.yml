@@ -3,11 +3,11 @@ name: docker-publish
 on:
   workflow_dispatch: # 手动触发
   push:
-    branches: ['master']
+    branches: ["master"]
     # Publish semver tags as releases.
-    tags: ['v*.*.*']
+    tags: ["v*.*.*"]
   pull_request:
-    branches: ['master']
+    branches: ["master"]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -24,7 +24,7 @@ jobs:
       matrix:
         platform:
           - alpine
-          - slim
+          - debian
         node:
           - 14
           - 16
@@ -63,4 +63,3 @@ jobs:
           build-args: |
             VERSION=${{ matrix.node }}
           tags: ${{ env.REGISTRY }}/${{ github.repository }}/node-desktop:${{ matrix.node }}-${{ matrix.platform }}
-          labels: ${{ steps.meta.outputs.labels }}
