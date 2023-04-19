@@ -2,23 +2,27 @@ name: napi
 env:
   DEBUG: napi:*
   APP_NAME: node-screenshots
-  MACOSX_DEPLOYMENT_TARGET: '10.13'
+  MACOSX_DEPLOYMENT_TARGET: "10.13"
 on:
   push:
     branches:
       - master
     tags-ignore:
-      - '**'
+      - "**"
     paths-ignore:
-      - '**/*.md'
+      - "**/*.md"
       - LICENSE
-      - '**/*.gitignore'
+      - "**/*.gitignore"
       - .editorconfig
       - docs/**
   pull_request: null
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
-    if: "!contains(github.event.head_commit.message, 'skip ci')"
     strategy:
       fail-fast: false
       matrix:
@@ -31,13 +35,9 @@ jobs:
           - host: macos-latest
             target: aarch64-apple-darwin
             build: |
-              sudo rm -Rf /Library/Developer/CommandLineTools/SDKs/*;
-              export CC=$(xcrun -f clang);
-              export CXX=$(xcrun -f clang++);
-              SYSROOT=$(xcrun --sdk macosx --show-sdk-path);
-              export CFLAGS="-isysroot $SYSROOT -isystem $SYSROOT";
               yarn build --target aarch64-apple-darwin
               strip -x *.node
+
           - host: windows-latest
             build: yarn build
             target: x86_64-pc-windows-msvc
@@ -49,6 +49,7 @@ jobs:
           - host: windows-latest
             target: aarch64-pc-windows-msvc
             build: yarn build --target aarch64-pc-windows-msvc
+
           - host: ubuntu-latest
             target: x86_64-unknown-linux-gnu
             docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-debian
@@ -72,8 +73,11 @@ jobs:
           #   docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-debian-aarch64
           #   build: |-
           #     set -e &&
+          #     dpkg --add-architecture arm64 &&
           #     apt-get update &&
-          #     apt-get install libxcb1-dev libxrandr-dev libdbus-1-dev -y &&
+          #     apt-get install libxcb1-dev:arm64 libxrandr-dev:arm64 libdbus-1-dev:arm64 -y &&
+          #     rustup target add aarch64-unknown-linux-gnu &&
+          #     rustup toolchain install stable-aarch64-unknown-linux-gnu &&
           #     yarn build --target aarch64-unknown-linux-gnu &&
           #     aarch64-unknown-linux-gnu-strip *.node
           # - host: ubuntu-latest
@@ -82,11 +86,11 @@ jobs:
           #   build: |-
           #     set -e &&
           #     apk update &&
-          #     apk add libxcb-dev libxrandr-dev dbus-dev &&
-          #     rustup target add aarch64-unknown-linux-musl &&
+          #     apk add libxcb-dev libxrandr-dev dbus-dev && \
+          #     rustup target add aarch64-unknown-linux-musl && \
           #     yarn build --target aarch64-unknown-linux-musl &&
           #     /aarch64-linux-musl-cross/bin/aarch64-linux-musl-strip *.node
-    name: stable - ${{ matrix.settings.target }} - node@16
+    name: stable - ${{ matrix.settings.target }} - node@18
     runs-on: ${{ matrix.settings.host }}
     steps:
       - uses: actions/checkout@v3
@@ -94,17 +98,15 @@ jobs:
         uses: actions/setup-node@v3
         if: ${{ !matrix.settings.docker }}
         with:
-          node-version: 16
+          node-version: 18
           check-latest: true
           cache: yarn
       - name: Install
-        uses: actions-rs/toolchain@v1
+        uses: dtolnay/rust-toolchain@stable
         if: ${{ !matrix.settings.docker }}
         with:
-          profile: minimal
-          override: true
           toolchain: stable
-          target: ${{ matrix.settings.target }}
+          targets: ${{ matrix.settings.target }}
       - name: Cache cargo
         uses: actions/cache@v3
         with:
@@ -112,16 +114,13 @@ jobs:
             ~/.cargo/registry/index/
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
-            .cargo-cache/registry/index/
-            .cargo-cache/registry/cache/
-            .cargo-cache/git/db/
+            .cargo-cache
             target/
           key: ${{ matrix.settings.target }}-cargo-${{ matrix.settings.host }}
-      - name: Cache NPM dependencies
-        uses: actions/cache@v3
+      - uses: goto-bus-stop/setup-zig@v2
+        if: ${{ matrix.settings.target == 'armv7-unknown-linux-gnueabihf' }}
         with:
-          path: .yarn/cache
-          key: npm-cache-build-${{ matrix.settings.target }}-node@16
+          version: 0.10.1
       - name: Setup toolchain
         run: ${{ matrix.settings.setup }}
         if: ${{ matrix.settings.setup }}
@@ -136,7 +135,7 @@ jobs:
         uses: actions/setup-node@v3
         if: matrix.settings.target == 'i686-pc-windows-msvc'
         with:
-          node-version: 16
+          node-version: 18
           check-latest: true
           cache: yarn
           architecture: x86
@@ -145,7 +144,7 @@ jobs:
         if: ${{ matrix.settings.docker }}
         with:
           image: ${{ matrix.settings.docker }}
-          options: '--user 0:0 -v ${{ github.workspace }}/.cargo-cache/git/db:/root/.cargo/git/db -v ${{ github.workspace }}/.cargo/registry/cache:/root/.cargo/registry/cache -v ${{ github.workspace }}/.cargo/registry/index:/root/.cargo/registry/index -v ${{ github.workspace }}:/build -w /build'
+          options: "--user 0:0 -v ${{ github.workspace }}/.cargo-cache/git/db:/usr/local/cargo/git/db -v ${{ github.workspace }}/.cargo/registry/cache:/usr/local/cargo/registry/cache -v ${{ github.workspace }}/.cargo/registry/index:/usr/local/cargo/registry/index -v ${{ github.workspace }}:/build -w /build"
           run: ${{ matrix.settings.build }}
       - name: Build
         run: ${{ matrix.settings.build }}
@@ -168,9 +167,9 @@ jobs:
           - host: windows-latest
             target: x86_64-pc-windows-msvc
         node:
-          - '14'
-          - '16'
-          - '18'
+          - "14"
+          - "16"
+          - "18"
     runs-on: ${{ matrix.settings.host }}
     steps:
       - uses: actions/checkout@v3
@@ -180,11 +179,6 @@ jobs:
           node-version: ${{ matrix.node }}
           check-latest: true
           cache: yarn
-      - name: Cache NPM dependencies
-        uses: actions/cache@v3
-        with:
-          path: .yarn/cache
-          key: npm-cache-test-${{ matrix.settings.target }}-${{ matrix.node }}-${{ hashFiles('yarn.lock') }}
       - name: Install dependencies
         run: yarn install
       - name: Download artifacts
@@ -205,9 +199,9 @@ jobs:
   #     fail-fast: false
   #     matrix:
   #       node:
-  #         - '14'
-  #         - '16'
-  #         - '18'
+  #         - "14"
+  #         - "16"
+  #         - "18"
   #   runs-on: ubuntu-latest
   #   steps:
   #     - uses: actions/checkout@v3
@@ -217,11 +211,6 @@ jobs:
   #         node-version: ${{ matrix.node }}
   #         check-latest: true
   #         cache: yarn
-  #     - name: Cache NPM dependencies
-  #       uses: actions/cache@v3
-  #       with:
-  #         path: .yarn/cache
-  #         key: npm-cache-test-linux-x64-gnu-${{ matrix.node }}
   #     - name: Install dependencies
   #       run: yarn install
   #     - name: Download artifacts
@@ -242,9 +231,9 @@ jobs:
       fail-fast: false
       matrix:
         node:
-          - '14'
-          - '16'
-          - '18'
+          - "14"
+          - "16"
+          - "18"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -254,11 +243,6 @@ jobs:
           node-version: ${{ matrix.node }}
           check-latest: true
           cache: yarn
-      - name: Cache NPM dependencies
-        uses: actions/cache@v3
-        with:
-          path: .yarn/cache
-          key: npm-cache-test-x86_64-unknown-linux-musl-${{ matrix.node }}
       - name: Install dependencies
         run: |
           yarn config set supportedArchitectures.libc "musl"
@@ -286,7 +270,6 @@ jobs:
   #         - '18'
   #   runs-on: ubuntu-latest
   #   steps:
-  #     - run: docker run --rm --privileged multiarch/qemu-user-static:register --reset
   #     - uses: actions/checkout@v3
   #     - name: Download artifacts
   #       uses: actions/download-artifact@v3
@@ -296,21 +279,21 @@ jobs:
   #     - name: List packages
   #       run: ls -R .
   #       shell: bash
-  #     - name: Cache NPM dependencies
-  #       uses: actions/cache@v3
-  #       with:
-  #         path: .yarn/cache
-  #         key: npm-cache-test-linux-aarch64-gnu-${{ matrix.node }}
   #     - name: Install dependencies
   #       run: |
   #         yarn config set supportedArchitectures.cpu "arm64"
   #         yarn config set supportedArchitectures.libc "glibc"
   #         yarn install
+  #     - name: Set up QEMU
+  #       uses: docker/setup-qemu-action@v2
+  #       with:
+  #         platforms: arm64
+  #     - run: docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
   #     - name: Setup and run tests
   #       uses: addnab/docker-run-action@v3
   #       with:
-  #         image: ghcr.io/napi-rs/napi-rs/nodejs:aarch64-${{ matrix.node }}
-  #         options: '-v ${{ github.workspace }}:/build -w /build'
+  #         image: ghcr.io/nashaofu/node-screenshots/node-desktop:${{ matrix.node }}-slim
+  #         options: '--platform linux/arm64 -v ${{ github.workspace }}:/build -w /build'
   #         run: |
   #           set -e
   #           yarn test
@@ -321,7 +304,6 @@ jobs:
   #     - build
   #   runs-on: ubuntu-latest
   #   steps:
-  #     - run: docker run --rm --privileged multiarch/qemu-user-static:register --reset
   #     - uses: actions/checkout@v3
   #     - name: Download artifacts
   #       uses: actions/download-artifact@v3
@@ -331,25 +313,57 @@ jobs:
   #     - name: List packages
   #       run: ls -R .
   #       shell: bash
-  #     - name: Cache NPM dependencies
-  #       uses: actions/cache@v3
-  #       with:
-  #         path: .yarn/cache
-  #         key: npm-cache-test-linux-aarch64-musl-${{ matrix.node }}
   #     - name: Install dependencies
   #       run: |
   #         yarn config set supportedArchitectures.cpu "arm64"
   #         yarn config set supportedArchitectures.libc "musl"
   #         yarn install
+  #     - name: Set up QEMU
+  #       uses: docker/setup-qemu-action@v2
+  #       with:
+  #         platforms: arm64
+  #     - run: docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
   #     - name: Setup and run tests
   #       uses: addnab/docker-run-action@v3
   #       with:
-  #         image: multiarch/alpine:aarch64-latest-stable
-  #         options: '-v ${{ github.workspace }}:/build -w /build'
+  #         image: ghcr.io/nashaofu/node-screenshots/node-desktop:lts-alpine
+  #         options: '--platform linux/arm64 -v ${{ github.workspace }}:/build -w /build'
   #         run: |
   #           set -e
-  #           apk add nodejs npm yarn
   #           yarn test
+  universal-macOS:
+    name: Build universal macOS binary
+    needs:
+      - build
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          check-latest: true
+          cache: yarn
+      - name: Install dependencies
+        run: yarn install
+      - name: Download macOS x64 artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: bindings-x86_64-apple-darwin
+          path: artifacts
+      - name: Download macOS arm64 artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: bindings-aarch64-apple-darwin
+          path: artifacts
+      - name: Combine binaries
+        run: yarn universal
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: bindings-universal-apple-darwin
+          path: ${{ env.APP_NAME }}.*.node
+          if-no-files-found: error
   publish:
     name: Publish
     runs-on: ubuntu-latest
@@ -359,19 +373,15 @@ jobs:
       - test-linux-x64-musl-binding
       # - test-linux-aarch64-gnu-binding
       # - test-linux-aarch64-musl-binding
+      - universal-macOS
     steps:
       - uses: actions/checkout@v3
       - name: Setup node
         uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: 18
           check-latest: true
           cache: yarn
-      - name: Cache NPM dependencies
-        uses: actions/cache@v3
-        with:
-          path: .yarn/cache
-          key: npm-cache-ubuntu-latest-publish
       - name: Install dependencies
         run: yarn install
       - name: Download all artifacts
