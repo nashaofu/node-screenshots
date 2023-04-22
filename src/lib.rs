@@ -8,7 +8,7 @@ use napi::{
   Env, JsBuffer, Task,
 };
 
-use screenshots::{Image, Screen};
+use screenshots::Screen;
 use std::thread;
 
 #[napi]
@@ -32,7 +32,7 @@ pub struct AsyncCapture {
 
 #[napi]
 impl Task for AsyncCapture {
-  type Output = Image;
+  type Output = Vec<u8>;
   type JsValue = JsBuffer;
 
   fn compute(&mut self) -> Result<Self::Output> {
@@ -41,11 +41,15 @@ impl Task for AsyncCapture {
       let image = if let Some((x, y, width, height)) = area {
         screen
           .capture_area(x, y, width, height)
-          .map_err(|e| Error::from_reason(e.to_string()))?
+          .map_err(|err| Error::from_reason(err.to_string()))?
+          .to_png()
+          .map_err(|err| Error::from_reason(err.to_string()))?
       } else {
         screen
           .capture()
-          .map_err(|e| Error::from_reason(e.to_string()))?
+          .map_err(|err| Error::from_reason(err.to_string()))?
+          .to_png()
+          .map_err(|err| Error::from_reason(err.to_string()))?
       };
 
       Ok(image)
@@ -57,7 +61,7 @@ impl Task for AsyncCapture {
   }
 
   fn resolve(&mut self, env: Env, output: Self::Output) -> Result<Self::JsValue> {
-    let buffer = env.create_buffer_copy(output.buffer())?;
+    let buffer = env.create_buffer_copy(output)?;
     Ok(buffer.into_raw())
   }
 }
@@ -102,8 +106,10 @@ impl Screenshots {
     let image = self
       .screen
       .capture()
-      .map_err(|e| Error::from_reason(e.to_string()))?;
-    let buffer = env.create_buffer_copy(image.buffer())?;
+      .map_err(|e| Error::from_reason(e.to_string()))?
+      .to_png()
+      .map_err(|err| Error::from_reason(err.to_string()))?;
+    let buffer = env.create_buffer_copy(image)?;
 
     Ok(buffer.into_raw())
   }
@@ -128,8 +134,10 @@ impl Screenshots {
     let image = self
       .screen
       .capture_area(x, y, width, height)
-      .map_err(|e| Error::from_reason(e.to_string()))?;
-    let buffer = env.create_buffer_copy(image.buffer())?;
+      .map_err(|e| Error::from_reason(e.to_string()))?
+      .to_png()
+      .map_err(|err| Error::from_reason(err.to_string()))?;
+    let buffer = env.create_buffer_copy(image)?;
 
     Ok(buffer.into_raw())
   }
