@@ -68,35 +68,35 @@ jobs:
               apk add libxcb-dev &&
               yarn build &&
               strip *.node
-          - host: ubuntu-latest
-            target: aarch64-unknown-linux-gnu
-            docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-debian-aarch64
-            build: |-
-              set -e &&
-              apt-get update &&
-              apt-get install libxcb1-dev -y &&
-              ln -s /usr/lib/x86_64-linux-gnu/libxcb.so /usr/aarch64-unknown-linux-gnu/lib/libxcb.so &&
-              ln -s /usr/lib/x86_64-linux-gnu/libxcb.a /usr/aarch64-unknown-linux-gnu/lib/libxcb.a &&
-              ln -s /usr/lib/x86_64-linux-gnu/libxcb.so /usr/aarch64-unknown-linux-gnu/lib/gcc/aarch64-unknown-linux-gnu/libxcb.so &&
-              ln -s /usr/lib/x86_64-linux-gnu/libxcb.a /usr/aarch64-unknown-linux-gnu/lib/gcc/aarch64-unknown-linux-gnu/libxcb.a &&
-              ln -s /usr/lib/x86_64-linux-gnu/libxcb.so /usr/aarch64-unknown-linux-gnu/lib/gcc/libxcb.so &&
-              ln -s /usr/lib/x86_64-linux-gnu/libxcb.a /usr/aarch64-unknown-linux-gnu/lib/gcc/libxcb.a &&
-              ln -s /usr/lib/x86_64-linux-gnu/libxcb.so /usr/aarch64-unknown-linux-gnu/libxcb.so &&
-              ln -s /usr/lib/x86_64-linux-gnu/libxcb.a /usr/aarch64-unknown-linux-gnu/libxcb.a &&
-              rustup target add aarch64-unknown-linux-gnu &&
-              rustup toolchain install stable-aarch64-unknown-linux-gnu &&
-              yarn build --target aarch64-unknown-linux-gnu &&
-              aarch64-unknown-linux-gnu-strip *.node
-          - host: ubuntu-latest
-            target: aarch64-unknown-linux-musl
-            docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-alpine
-            build: |-
-              set -e &&
-              apk update &&
-              apk add libxcb-dev libxrandr-dev && \
-              rustup target add aarch64-unknown-linux-musl && \
-              yarn build --target aarch64-unknown-linux-musl &&
-              /aarch64-linux-musl-cross/bin/aarch64-linux-musl-strip *.node
+          # - host: ubuntu-latest
+          #   target: aarch64-unknown-linux-gnu
+          #   docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-debian-aarch64
+          #   build: |-
+          #     set -e &&
+          #     apt-get update &&
+          #     apt-get install libxcb1-dev -y &&
+          #     ln -s /usr/lib/x86_64-linux-gnu/libxcb.so /usr/aarch64-unknown-linux-gnu/lib/libxcb.so &&
+          #     ln -s /usr/lib/x86_64-linux-gnu/libxcb.a /usr/aarch64-unknown-linux-gnu/lib/libxcb.a &&
+          #     ln -s /usr/lib/x86_64-linux-gnu/libxcb.so /usr/aarch64-unknown-linux-gnu/lib/gcc/aarch64-unknown-linux-gnu/libxcb.so &&
+          #     ln -s /usr/lib/x86_64-linux-gnu/libxcb.a /usr/aarch64-unknown-linux-gnu/lib/gcc/aarch64-unknown-linux-gnu/libxcb.a &&
+          #     ln -s /usr/lib/x86_64-linux-gnu/libxcb.so /usr/aarch64-unknown-linux-gnu/lib/gcc/libxcb.so &&
+          #     ln -s /usr/lib/x86_64-linux-gnu/libxcb.a /usr/aarch64-unknown-linux-gnu/lib/gcc/libxcb.a &&
+          #     ln -s /usr/lib/x86_64-linux-gnu/libxcb.so /usr/aarch64-unknown-linux-gnu/libxcb.so &&
+          #     ln -s /usr/lib/x86_64-linux-gnu/libxcb.a /usr/aarch64-unknown-linux-gnu/libxcb.a &&
+          #     rustup target add aarch64-unknown-linux-gnu &&
+          #     rustup toolchain install stable-aarch64-unknown-linux-gnu &&
+          #     yarn build --target aarch64-unknown-linux-gnu &&
+          #     aarch64-unknown-linux-gnu-strip *.node
+          # - host: ubuntu-latest
+          #   target: aarch64-unknown-linux-musl
+          #   docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-alpine
+          #   build: |-
+          #     set -e &&
+          #     apk update &&
+          #     apk add libxcb-dev libxrandr-dev && \
+          #     rustup target add aarch64-unknown-linux-musl && \
+          #     yarn build --target aarch64-unknown-linux-musl &&
+          #     /aarch64-linux-musl-cross/bin/aarch64-linux-musl-strip *.node
     name: stable - ${{ matrix.settings.target }} - node@18
     runs-on: ${{ matrix.settings.host }}
     steps:
