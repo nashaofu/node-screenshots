@@ -42,13 +42,13 @@ impl Task for AsyncCapture {
         screen
           .capture_area(x, y, width, height)
           .map_err(|err| Error::from_reason(err.to_string()))?
-          .to_png()
+          .to_png(None)
           .map_err(|err| Error::from_reason(err.to_string()))?
       } else {
         screen
           .capture()
           .map_err(|err| Error::from_reason(err.to_string()))?
-          .to_png()
+          .to_png(None)
           .map_err(|err| Error::from_reason(err.to_string()))?
       };
 
@@ -107,7 +107,7 @@ impl Screenshots {
       .screen
       .capture()
       .map_err(|e| Error::from_reason(e.to_string()))?
-      .to_png()
+      .to_png(None)
       .map_err(|err| Error::from_reason(err.to_string()))?;
     let buffer = env.create_buffer_copy(image)?;
 
@@ -135,7 +135,7 @@ impl Screenshots {
       .screen
       .capture_area(x, y, width, height)
       .map_err(|e| Error::from_reason(e.to_string()))?
-      .to_png()
+      .to_png(None)
       .map_err(|err| Error::from_reason(err.to_string()))?;
     let buffer = env.create_buffer_copy(image)?;
 
