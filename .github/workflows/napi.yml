@@ -56,7 +56,7 @@ jobs:
             build: |-
               set -e &&
               apt-get update &&
-              apt-get install libxcb1-dev libxrandr-dev libdbus-1-dev -y &&
+              apt-get install libxcb1-dev -y &&
               yarn build --target x86_64-unknown-linux-gnu &&
               strip *.node
           - host: ubuntu-latest
@@ -65,7 +65,7 @@ jobs:
             build: |-
               set -e &&
               apk update &&
-              apk add libxcb-dev libxrandr-dev dbus-dev &&
+              apk add libxcb-dev &&
               yarn build &&
               strip *.node
           # - host: ubuntu-latest
@@ -73,9 +73,16 @@ jobs:
           #   docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-debian-aarch64
           #   build: |-
           #     set -e &&
-          #     dpkg --add-architecture arm64 &&
           #     apt-get update &&
-          #     apt-get install libxcb1-dev:arm64 libxrandr-dev:arm64 libdbus-1-dev:arm64 -y &&
+          #     apt-get install libxcb1-dev -y &&
+          #     ln -s /usr/lib/x86_64-linux-gnu/libxcb.so /usr/aarch64-unknown-linux-gnu/lib/libxcb.so &&
+          #     ln -s /usr/lib/x86_64-linux-gnu/libxcb.a /usr/aarch64-unknown-linux-gnu/lib/libxcb.a &&
+          #     ln -s /usr/lib/x86_64-linux-gnu/libxcb.so /usr/aarch64-unknown-linux-gnu/lib/gcc/aarch64-unknown-linux-gnu/libxcb.so &&
+          #     ln -s /usr/lib/x86_64-linux-gnu/libxcb.a /usr/aarch64-unknown-linux-gnu/lib/gcc/aarch64-unknown-linux-gnu/libxcb.a &&
+          #     ln -s /usr/lib/x86_64-linux-gnu/libxcb.so /usr/aarch64-unknown-linux-gnu/lib/gcc/libxcb.so &&
+          #     ln -s /usr/lib/x86_64-linux-gnu/libxcb.a /usr/aarch64-unknown-linux-gnu/lib/gcc/libxcb.a &&
+          #     ln -s /usr/lib/x86_64-linux-gnu/libxcb.so /usr/aarch64-unknown-linux-gnu/libxcb.so &&
+          #     ln -s /usr/lib/x86_64-linux-gnu/libxcb.a /usr/aarch64-unknown-linux-gnu/libxcb.a &&
           #     rustup target add aarch64-unknown-linux-gnu &&
           #     rustup toolchain install stable-aarch64-unknown-linux-gnu &&
           #     yarn build --target aarch64-unknown-linux-gnu &&
@@ -86,7 +93,7 @@ jobs:
           #   build: |-
           #     set -e &&
           #     apk update &&
-          #     apk add libxcb-dev libxrandr-dev dbus-dev && \
+          #     apk add libxcb-dev libxrandr-dev && \
           #     rustup target add aarch64-unknown-linux-musl && \
           #     yarn build --target aarch64-unknown-linux-musl &&
           #     /aarch64-linux-musl-cross/bin/aarch64-linux-musl-strip *.node
@@ -199,8 +206,6 @@ jobs:
   #     fail-fast: false
   #     matrix:
   #       node:
-  #         - "14"
-  #         - "16"
   #         - "18"
   #   runs-on: ubuntu-latest
   #   steps:
