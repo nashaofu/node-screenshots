@@ -11,13 +11,24 @@
   },
 
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
-  "forwardPorts": [6080]
+  "forwardPorts": [6080],
 
   // Use 'postCreateCommand' to run commands after the container is created.
   // "postCreateCommand": "yarn install",
 
   // Configure tool-specific properties.
-  // "customizations": {},
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "wengerk.highlight-bad-chars",
+        "streetsidesoftware.code-spell-checker",
+        "EditorConfig.EditorConfig",
+        "esbenp.prettier-vscode",
+        "rust-lang.rust-analyzer",
+        "foxundermoon.shell-format"
+      ]
+    }
+  }
 
   // Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
   // "remoteUser": "root"
