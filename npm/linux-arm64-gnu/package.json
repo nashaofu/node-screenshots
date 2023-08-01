@@ -1,21 +1,21 @@
 {
-  "name": "node-screenshots-linux-arm64-gnu",
-  "version": "0.0.0",
-  "os": [
-    "linux"
-  ],
-  "cpu": [
-    "arm64"
-  ],
-  "main": "node-screenshots.linux-arm64-gnu.node",
-  "files": [
-    "node-screenshots.linux-arm64-gnu.node"
-  ],
-  "license": "Apache-2.0",
-  "engines": {
-    "node": ">= 10"
-  },
-  "libc": [
-    "glibc"
-  ]
+    "name": "node-screenshots-linux-arm64-gnu",
+    "version": "0.0.0",
+    "os": [
+        "linux"
+    ],
+    "cpu": [
+        "arm64"
+    ],
+    "main": "node-screenshots.linux-arm64-gnu.node",
+    "files": [
+        "node-screenshots.linux-arm64-gnu.node"
+    ],
+    "license": "Apache-2.0",
+    "engines": {
+        "node": ">= 10"
+    },
+    "libc": [
+        "glibc"
+    ]
 }

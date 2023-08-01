@@ -1,14 +1,3 @@
-[target.x86_64-unknown-linux-gnu]
-rustflags = ["-L", "native=/usr/lib/x86_64-linux-gnu/"]
-
-[target.aarch64-unknown-linux-gnu]
-rustflags = ["-L", "native=/usr/aarch64-unknown-linux-gnu/"]
-
 [target.aarch64-unknown-linux-musl]
 linker = "aarch64-linux-musl-gcc"
-rustflags = [
-  "-C",
-  "target-feature=-crt-static",
-  "-L",
-  "native=/usr/lib/",
-]
+rustflags = ["-C", "target-feature=-crt-static"]
