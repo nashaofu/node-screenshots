@@ -1,40 +1,40 @@
 {
-  "name": "node-screenshots",
-  "version": "0.1.6",
-  "main": "index.js",
-  "types": "index.d.ts",
-  "files": [
-    "index.js",
-    "index.d.ts"
-  ],
-  "scripts": {
-    "artifacts": "napi artifacts",
-    "build": "napi build --platform --release",
-    "build:debug": "napi build --platform",
-    "prepublishOnly": "napi prepublish -t npm",
-    "test": "ava",
-    "universal": "napi universal",
-    "version": "napi version"
-  },
-  "napi": {
     "name": "node-screenshots",
-    "triples": {
-      "additional": [
-        "aarch64-apple-darwin",
-        "aarch64-pc-windows-msvc",
-        "x86_64-unknown-linux-musl",
-        "i686-pc-windows-msvc",
-        "universal-apple-darwin"
-      ]
+    "version": "0.1.7",
+    "main": "index.js",
+    "types": "index.d.ts",
+    "files": [
+        "index.js",
+        "index.d.ts"
+    ],
+    "scripts": {
+        "artifacts": "napi artifacts",
+        "build": "napi build --platform --release",
+        "build:debug": "napi build --platform",
+        "prepublishOnly": "napi prepublish -t npm",
+        "test": "ava",
+        "universal": "napi universal",
+        "version": "napi version"
+    },
+    "napi": {
+        "name": "node-screenshots",
+        "triples": {
+            "additional": [
+                "aarch64-apple-darwin",
+                "aarch64-pc-windows-msvc",
+                "x86_64-unknown-linux-musl",
+                "i686-pc-windows-msvc",
+                "universal-apple-darwin"
+            ]
+        }
+    },
+    "license": "Apache-2.0",
+    "engines": {
+        "node": ">= 10"
+    },
+    "packageManager": "yarn@3.5.0",
+    "devDependencies": {
+        "@napi-rs/cli": "^2.16.3",
+        "ava": "^5.3.1"
     }
-  },
-  "license": "Apache-2.0",
-  "engines": {
-    "node": ">= 10"
-  },
-  "packageManager": "yarn@3.5.0",
-  "devDependencies": {
-    "@napi-rs/cli": "^2.15.2",
-    "ava": "^5.1.1"
-  }
 }

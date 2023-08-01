@@ -34,36 +34,38 @@ fs.writeFileSync("./a.png", image);
 
 // Asynchronous capture
 capturer.capture().then((data) => {
-  console.log(data);
-  fs.writeFileSync(`${capturer.id}.png`, data);
+    console.log(data);
+    fs.writeFileSync(`${capturer.id}.png`, data);
 });
 
 // Get all screen captures
 let all = Screenshots.all() ?? [];
 
 all.forEach((capturer) => {
-  console.log({
-    id: capturer.id,
-    x: capturer.x,
-    y: capturer.y,
-    width: capturer.width,
-    height: capturer.height,
-    rotation: capturer.rotation,
-    scaleFactor: capturer.scaleFactor,
-    isPrimary: capturer.isPrimary,
-  });
-  capturer.captureSync();
+    console.log({
+        id: capturer.id,
+        x: capturer.x,
+        y: capturer.y,
+        width: capturer.width,
+        height: capturer.height,
+        rotation: capturer.rotation,
+        scaleFactor: capturer.scaleFactor,
+        isPrimary: capturer.isPrimary,
+    });
+    capturer.captureSync(true);
 });
 ```
 
 ## API
 
-- `Screenshots.fromPoint(x, y)`: Get a screenshot from the specified coordinates
-- `Screenshots.all()`: Get all screenshots
-- `screenshots.capture()`: Asynchronously capture full screen
-- `screenshots.captureSync()`: Synchronously capture full screen
-- `screenshots.captureArea(x, y, width, height)`: Asynchronously capture the specified area
-- `screenshots.captureAreaSync(x, y, width, height)`: Synchronously capture the specified area
+-   `Screenshots.fromPoint(x, y)`: Get a screenshot from the specified coordinates
+-   `Screenshots.all()`: Get all screenshots
+-   `screenshots.capture(copyOutputData)`: Asynchronously capture full screen
+-   `screenshots.captureSync(copyOutputData)`: Synchronously capture full screen
+-   `screenshots.captureArea(x, y, width, height, copyOutputData)`: Asynchronously capture the specified area
+-   `screenshots.captureAreaSync(x, y, width, height, copyOutputData)`: Synchronously capture the specified area
+
+`copyOutputData`: pass related parameters in electron, otherwise electron will crash, nodejs does not pass or passes false, performance will be better, for more information refer to https://github.com/napi-rs/napi-rs/issues/1346
 
 ## Linux System Requirements
 

@@ -14,8 +14,8 @@ export class Screenshots {
   isPrimary: boolean
   static all(): Array<Screenshots>
   static fromPoint(x: number, y: number): Screenshots | null
-  captureSync(): Buffer
-  capture(): Promise<Buffer>
-  captureAreaSync(x: number, y: number, width: number, height: number): Buffer
-  captureArea(x: number, y: number, width: number, height: number): Promise<Buffer>
+  captureSync(copyOutputData?: boolean | undefined | null): Buffer
+  capture(copyOutputData?: boolean | undefined | null): Promise<Buffer>
+  captureAreaSync(x: number, y: number, width: number, height: number, copyOutputData?: boolean | undefined | null): Buffer
+  captureArea(x: number, y: number, width: number, height: number, copyOutputData?: boolean | undefined | null): Promise<Buffer>
 }
