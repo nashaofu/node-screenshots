@@ -34,36 +34,38 @@ fs.writeFileSync("./a.png", image);
 
 // 异步截图
 capturer.capture().then((data) => {
-  console.log(data);
-  fs.writeFileSync(`${capturer.id}.png`, data);
+    console.log(data);
+    fs.writeFileSync(`${capturer.id}.png`, data);
 });
 
 // 获取所有屏幕截图
 let all = Screenshots.all() ?? [];
 
 all.forEach((capturer) => {
-  console.log({
-    id: capturer.id,
-    x: capturer.x,
-    y: capturer.y,
-    width: capturer.width,
-    height: capturer.height,
-    rotation: capturer.rotation,
-    scaleFactor: capturer.scaleFactor,
-    isPrimary: capturer.isPrimary,
-  });
-  capturer.captureSync();
+    console.log({
+        id: capturer.id,
+        x: capturer.x,
+        y: capturer.y,
+        width: capturer.width,
+        height: capturer.height,
+        rotation: capturer.rotation,
+        scaleFactor: capturer.scaleFactor,
+        isPrimary: capturer.isPrimary,
+    });
+    capturer.captureSync(true);
 });
 ```
 
 ## API
 
-- `Screenshots.fromPoint(x, y)`: 获取指定坐标的截图
-- `Screenshots.all()`: 获取所有截图
-- `screenshots.capture()`: 异步截取全屏
-- `screenshots.captureSync()`: 同步截取全屏
-- `screenshots.captureArea(x, y, width, height)`: 异步截取指定区域
-- `screenshots.captureAreaSync(x, y, width, height)`: 同步截取指定区域
+-   `Screenshots.fromPoint(x, y)`: 获取指定坐标的截图
+-   `Screenshots.all()`: 获取所有截图
+-   `screenshots.capture(copyOutputData)`: 异步截取全屏
+-   `screenshots.captureSync(copyOutputData)`: 同步截取全屏
+-   `screenshots.captureArea(x, y, width, height, copyOutputData)`: 异步截取指定区域
+-   `screenshots.captureAreaSync(x, y, width, height, copyOutputData)`: 同步截取指定区域
+
+`copyOutputData`: electron 中传递传递相关参数，否则 electron 会崩溃，nodejs 不传或者传递 false，性能会更好，详细信息参考 https://github.com/napi-rs/napi-rs/issues/1346
 
 ## Linux 系统需求
 

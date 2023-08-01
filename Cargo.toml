@@ -7,13 +7,14 @@ version = "0.0.0"
 crate-type = ["cdylib"]
 
 [dependencies]
+image = "0.24"
 # Default enable napi4 feature, see https://nodejs.org/api/n-api.html#node-api-version-matrix
-napi = { version = "2.12.0", default-features = false, features = ["napi4"] }
-napi-derive = "2.12.2"
-screenshots = "0.7.0"
+napi = { version = "2.13", default-features = false, features = ["napi4"] }
+napi-derive = "2.13"
+screenshots = "0.8"
 
 [build-dependencies]
-napi-build = "2.0.1"
+napi-build = "2.0"
 
 [profile.release]
 lto = true
