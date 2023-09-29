@@ -19,8 +19,9 @@ test("Screenshots.fromPoint(-10, -10)", (t) => {
 
 test("screenshots.capture()", async (t) => {
     let screenshots = Screenshots.fromPoint(100, 100);
-    let buffer = await screenshots.capture();
-    t.true(buffer !== null);
+    let image = await screenshots.capture();
+    t.true(image !== null);
+    image.toPng()
 });
 
 test("screenshots.captureSync()", (t) => {

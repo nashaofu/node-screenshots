@@ -8,9 +8,9 @@ export class Image {
   height(): number
   getPixel(x: number, y: number): number[]
   putPixel(x: number, y: number, pixel: Array<number>): void
-  toBmp(): Buffer
-  toPng(): Buffer
-  toJpeg(): Buffer
+  toPng(): Promise<Buffer>
+  toJpeg(): Promise<Buffer>
+  toBmp(): Promise<Buffer>
   toRgba(): Buffer
   save(path: string): void
 }

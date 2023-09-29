@@ -1,99 +1,18 @@
 #![deny(clippy::all)]
 
+mod image;
+
 #[macro_use]
 extern crate napi_derive;
 
 use napi::{
-    bindgen_prelude::{AsyncTask, Buffer, Error, Result},
+    bindgen_prelude::{AsyncTask, Error, Result},
     Env, Task,
 };
 
-use image::{
-    codecs::{bmp::BmpEncoder, jpeg::JpegEncoder, png::PngEncoder},
-    Pixel, Rgba, RgbaImage,
-};
+use image::Image;
 use screenshots::Screen;
 use std::thread;
-
-#[napi]
-#[derive(Debug)]
-pub struct Image {
-    rgba_image: RgbaImage,
-}
-
-#[napi]
-impl Image {
-    fn new(rgba_image: RgbaImage) -> Self {
-        Image { rgba_image }
-    }
-
-    #[napi]
-    pub fn width(&self) -> u32 {
-        self.rgba_image.width()
-    }
-
-    #[napi]
-    pub fn height(&self) -> u32 {
-        self.rgba_image.height()
-    }
-
-    #[napi]
-    pub fn get_pixel(&self, x: u32, y: u32) -> [u8; 4] {
-        let pixel = self.rgba_image.get_pixel(x, y);
-        pixel.0
-    }
-
-    #[napi]
-    pub fn put_pixel(&mut self, x: u32, y: u32, pixel: Vec<u8>) {
-        let pixel = Rgba::from_slice(&pixel);
-        self.rgba_image.put_pixel(x, y, *pixel);
-    }
-
-    #[napi]
-    pub fn to_bmp(&self) -> Result<Buffer> {
-        let mut buffer = Vec::new();
-        let encoder = BmpEncoder::new(&mut buffer);
-
-        self.rgba_image
-            .write_with_encoder(encoder)
-            .map_err(|err| Error::from_reason(err.to_string()))?;
-        Ok(buffer.into())
-    }
-
-    #[napi]
-    pub fn to_png(&self) -> Result<Buffer> {
-        let mut buffer = Vec::new();
-        let encoder = PngEncoder::new(&mut buffer);
-
-        self.rgba_image
-            .write_with_encoder(encoder)
-            .map_err(|err| Error::from_reason(err.to_string()))?;
-        Ok(buffer.into())
-    }
-
-    #[napi]
-    pub fn to_jpeg(&self) -> Result<Buffer> {
-        let mut buffer = Vec::new();
-        let encoder = JpegEncoder::new(&mut buffer);
-
-        self.rgba_image
-            .write_with_encoder(encoder)
-            .map_err(|err| Error::from_reason(err.to_string()))?;
-        Ok(buffer.into())
-    }
-
-    #[napi]
-    pub fn to_rgba(&self) -> Buffer {
-        self.rgba_image.to_vec().into()
-    }
-
-    #[napi]
-    pub fn save(&self, path: String) -> Result<()> {
-        self.rgba_image
-            .save(path)
-            .map_err(|err| Error::from_reason(err.to_string()))
-    }
-}
 
 pub struct AsyncCapture {
     screen: Screen,
