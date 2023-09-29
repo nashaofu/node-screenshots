@@ -53,9 +53,13 @@ jobs:
 
                     - host: ubuntu-latest
                       target: x86_64-unknown-linux-gnu
-                      docker: node-rust:latest
+                      docker: node:14-buster
                       build: |-
                           set -e &&
+                          apt-get update &&
+                          apt-get install libxcb1-dev curl -y &&
+                          curl https://sh.rustup.rs -sSf | bash -s -- -y &&
+                          source ~/.bashrc &&
                           yarn build --target x86_64-unknown-linux-gnu &&
                           strip *.node
                     - host: ubuntu-latest
@@ -146,26 +150,12 @@ jobs:
                   cache: yarn
                   architecture: x86
 
-            - name: Setup QEMU
-              uses: docker/setup-qemu-action@v2
-              if: matrix.settings.target == 'x86_64-unknown-linux-gnu'
-            - name: Docker Setup Buildx
-              uses: docker/setup-buildx-action@v2
-              if: matrix.settings.target == 'x86_64-unknown-linux-gnu'
-            - name: Build and push Docker image
-              uses: docker/build-push-action@v3
-              if: matrix.settings.target == 'x86_64-unknown-linux-gnu'
-              with:
-                  context: ./docker
-                  file: ./docker/node-rust.Dockerfile
-                  push: false
-                  tags: node-rust:latest
-
             - name: Build in docker
               uses: addnab/docker-run-action@v3
               if: ${{ matrix.settings.docker }}
               with:
                   image: ${{ matrix.settings.docker }}
+                  shell: bash
                   options: "--user 0:0 -v ${{ github.workspace }}/.cargo-cache/git/db:/usr/local/cargo/git/db -v ${{ github.workspace }}/.cargo/registry/cache:/usr/local/cargo/registry/cache -v ${{ github.workspace }}/.cargo/registry/index:/usr/local/cargo/registry/index -v ${{ github.workspace }}:/build -w /build"
                   run: ${{ matrix.settings.build }}
             - name: Build
@@ -178,6 +168,7 @@ jobs:
                   name: bindings-${{ matrix.settings.target }}
                   path: ${{ env.APP_NAME }}.*.node
                   if-no-files-found: error
+
     test-macOS-windows-binding:
         name: Test bindings on ${{ matrix.settings.target }} - node@${{ matrix.node }}
         needs:
