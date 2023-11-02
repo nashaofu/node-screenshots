@@ -1,6 +1,6 @@
 {
     "name": "node-screenshots",
-    "version": "0.1.8",
+    "version": "0.1.9",
     "main": "index.js",
     "types": "index.d.ts",
     "files": [
