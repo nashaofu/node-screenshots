@@ -1,59 +1,12 @@
-use napi::{
-    bindgen_prelude::{AsyncTask, Error, Result},
-    Env, JsBuffer, Task,
-};
-use std::thread;
+use napi::bindgen_prelude::{AsyncTask, Error, Result};
 use xcap::Window as XCapWindow;
 
-use crate::{
-    utils::{bytes_to_buffer, rgba_image_to_bytes},
-    Monitor,
-};
-
-pub struct AsyncCaptureWindow {
-    xcap_window: XCapWindow,
-    copy_output_data: Option<bool>,
-}
-
-impl AsyncCaptureWindow {
-    pub fn new(xcap_window: XCapWindow, copy_output_data: Option<bool>) -> Self {
-        AsyncCaptureWindow {
-            xcap_window,
-            copy_output_data,
-        }
-    }
-}
-
-#[napi]
-impl Task for AsyncCaptureWindow {
-    type Output = Vec<u8>;
-    type JsValue = JsBuffer;
-
-    fn compute(&mut self) -> Result<Self::Output> {
-        let xcap_window = self.xcap_window.to_owned();
-
-        let handle = thread::spawn(move || {
-            let rgba_image = xcap_window
-                .capture_image()
-                .map_err(|err| Error::from_reason(err.to_string()))?;
-
-            rgba_image_to_bytes(rgba_image)
-        });
-
-        handle
-            .join()
-            .map_err(|_| Error::from_reason(String::from("Async Capture failed")))?
-    }
-
-    fn resolve(&mut self, env: Env, output: Self::Output) -> Result<Self::JsValue> {
-        bytes_to_buffer(env, output, self.copy_output_data)
-    }
-}
+use crate::{async_capture::AsyncCapture, Image, Monitor};
 
 #[napi]
 #[derive(Debug, Clone)]
 pub struct Window {
-    xcap_window: XCapWindow,
+    x_cap_window: XCapWindow,
     /// The window id
     #[napi(readonly)]
     pub id: u32,
@@ -88,19 +41,19 @@ pub struct Window {
 
 #[napi]
 impl Window {
-    fn new(xcap_window: &XCapWindow) -> Self {
+    fn new(x_cap_window: &XCapWindow) -> Self {
         Window {
-            xcap_window: xcap_window.clone(),
-            id: xcap_window.id(),
-            app_name: xcap_window.app_name().to_string(),
-            title: xcap_window.title().to_string(),
-            current_monitor: Monitor::new(&xcap_window.current_monitor()),
-            x: xcap_window.x(),
-            y: xcap_window.y(),
-            width: xcap_window.width(),
-            height: xcap_window.height(),
-            is_minimized: xcap_window.is_minimized(),
-            is_maximized: xcap_window.is_maximized(),
+            x_cap_window: x_cap_window.clone(),
+            id: x_cap_window.id(),
+            app_name: x_cap_window.app_name().to_string(),
+            title: x_cap_window.title().to_string(),
+            current_monitor: Monitor::new(&x_cap_window.current_monitor()),
+            x: x_cap_window.x(),
+            y: x_cap_window.y(),
+            width: x_cap_window.width(),
+            height: x_cap_window.height(),
+            is_minimized: x_cap_window.is_minimized(),
+            is_maximized: x_cap_window.is_maximized(),
         }
     }
 
@@ -116,21 +69,17 @@ impl Window {
     }
 
     #[napi]
-    pub fn capture_image_sync(&self, env: Env, copy_output_data: Option<bool>) -> Result<JsBuffer> {
+    pub fn capture_image_sync(&self) -> Result<Image> {
         let rgba_image = self
-            .xcap_window
+            .x_cap_window
             .capture_image()
             .map_err(|err| Error::from_reason(err.to_string()))?;
 
-        let bytes = rgba_image_to_bytes(rgba_image)?;
-        bytes_to_buffer(env, bytes, copy_output_data)
+        Ok(Image::from(rgba_image))
     }
 
     #[napi]
-    pub fn capture_image(&self, copy_output_data: Option<bool>) -> AsyncTask<AsyncCaptureWindow> {
-        AsyncTask::new(AsyncCaptureWindow::new(
-            self.xcap_window.clone(),
-            copy_output_data,
-        ))
+    pub fn capture_image(&self) -> AsyncTask<AsyncCapture> {
+        AsyncTask::new(AsyncCapture::Window(self.x_cap_window.clone()))
     }
 }
