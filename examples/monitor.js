@@ -1,23 +1,7 @@
 console.time("require");
 const { Monitor } = require("..");
 console.timeEnd("require");
-const fs = require("fs");
-const path = require("path");
-
-function writeFile(filename, buf) {
-    if (!fs.existsSync("target")) {
-        fs.mkdirSync("target");
-    }
-
-    fs.writeFileSync(path.join("target", filename), buf);
-}
-
-function runWithTime(fn, label) {
-    console.time(label);
-    let result = fn();
-    console.timeEnd(label);
-    return result;
-}
+const { saveImage, runWithTime } = require("./utils");
 
 async function main() {
     const monitors = runWithTime(() => Monitor.all(), "Monitor.all()");
@@ -41,10 +25,10 @@ async function main() {
     );
 
     let image = runWithTime(
-        () => monitor.captureImageSync(true),
-        "monitor.captureImageSync(true);"
+        () => monitor.captureImageSync(),
+        "monitor.captureImageSync();"
     );
-    writeFile(`temp-monitor-${monitor.id}.png`, image);
+    saveImage(`monitor-${monitor.id}.jpeg`, image.toJpegSync());
 
     let captureImagePromise = runWithTime(
         () => monitor.captureImage(),
@@ -53,9 +37,9 @@ async function main() {
     console.log("Monitor captureImagePromise:", captureImagePromise);
 
     console.time("await captureImagePromise");
-    const data = await captureImagePromise;
+    const image2 = await captureImagePromise;
     console.timeLog("await captureImagePromise");
-    writeFile(`temp-monitor-async-${monitor.id}.png`, data);
+    saveImage(`monitor-async-${monitor.id}.png`, image2.toPngSync());
 }
 
 main();

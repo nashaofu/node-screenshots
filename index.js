@@ -310,7 +310,8 @@ if (!nativeBinding) {
   throw new Error(`Failed to load native binding`)
 }
 
-const { Monitor, Window } = nativeBinding
+const { Image, Monitor, Window } = nativeBinding
 
+module.exports.Image = Image
 module.exports.Monitor = Monitor
 module.exports.Window = Window

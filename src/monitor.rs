@@ -1,56 +1,12 @@
-use napi::{
-    bindgen_prelude::{AsyncTask, Error, Result},
-    Env, JsBuffer, Task,
-};
-use std::thread;
+use napi::bindgen_prelude::{AsyncTask, Error, Result};
 use xcap::Monitor as XCapMonitor;
 
-use crate::utils::{bytes_to_buffer, rgba_image_to_bytes};
-
-pub struct AsyncCaptureMonitor {
-    xcap_monitor: XCapMonitor,
-    copy_output_data: Option<bool>,
-}
-
-impl AsyncCaptureMonitor {
-    pub fn new(xcap_monitor: XCapMonitor, copy_output_data: Option<bool>) -> Self {
-        AsyncCaptureMonitor {
-            xcap_monitor,
-            copy_output_data,
-        }
-    }
-}
-
-#[napi]
-impl Task for AsyncCaptureMonitor {
-    type Output = Vec<u8>;
-    type JsValue = JsBuffer;
-
-    fn compute(&mut self) -> Result<Self::Output> {
-        let xcap_monitor = self.xcap_monitor.to_owned();
-
-        let handle = thread::spawn(move || {
-            let rgba_image = xcap_monitor
-                .capture_image()
-                .map_err(|err| Error::from_reason(err.to_string()))?;
-
-            rgba_image_to_bytes(rgba_image)
-        });
-
-        handle
-            .join()
-            .map_err(|_| Error::from_reason(String::from("Async Capture failed")))?
-    }
-
-    fn resolve(&mut self, env: Env, output: Self::Output) -> Result<Self::JsValue> {
-        bytes_to_buffer(env, output, self.copy_output_data)
-    }
-}
+use crate::{async_capture::AsyncCapture, Image};
 
 #[napi]
 #[derive(Debug, Clone)]
 pub struct Monitor {
-    xcap_monitor: XCapMonitor,
+    x_cap_monitor: XCapMonitor,
     /// Unique identifier associated with the screen.
     #[napi(readonly)]
     pub id: u32,
@@ -85,19 +41,19 @@ pub struct Monitor {
 
 #[napi]
 impl Monitor {
-    pub(crate) fn new(xcap_monitor: &XCapMonitor) -> Self {
+    pub(crate) fn new(x_cap_monitor: &XCapMonitor) -> Self {
         Monitor {
-            xcap_monitor: xcap_monitor.clone(),
-            id: xcap_monitor.id(),
-            name: xcap_monitor.name().to_string(),
-            x: xcap_monitor.x(),
-            y: xcap_monitor.y(),
-            width: xcap_monitor.width(),
-            height: xcap_monitor.height(),
-            rotation: xcap_monitor.rotation() as f64,
-            scale_factor: xcap_monitor.scale_factor() as f64,
-            frequency: xcap_monitor.frequency() as f64,
-            is_primary: xcap_monitor.is_primary(),
+            x_cap_monitor: x_cap_monitor.clone(),
+            id: x_cap_monitor.id(),
+            name: x_cap_monitor.name().to_string(),
+            x: x_cap_monitor.x(),
+            y: x_cap_monitor.y(),
+            width: x_cap_monitor.width(),
+            height: x_cap_monitor.height(),
+            rotation: x_cap_monitor.rotation() as f64,
+            scale_factor: x_cap_monitor.scale_factor() as f64,
+            frequency: x_cap_monitor.frequency() as f64,
+            is_primary: x_cap_monitor.is_primary(),
         }
     }
 
@@ -118,21 +74,17 @@ impl Monitor {
     }
 
     #[napi]
-    pub fn capture_image_sync(&self, env: Env, copy_output_data: Option<bool>) -> Result<JsBuffer> {
+    pub fn capture_image_sync(&self) -> Result<Image> {
         let rgba_image = self
-            .xcap_monitor
+            .x_cap_monitor
             .capture_image()
             .map_err(|err| Error::from_reason(err.to_string()))?;
 
-        let bytes = rgba_image_to_bytes(rgba_image)?;
-        bytes_to_buffer(env, bytes, copy_output_data)
+        Ok(Image::from(rgba_image))
     }
 
     #[napi]
-    pub fn capture_image(&self, copy_output_data: Option<bool>) -> AsyncTask<AsyncCaptureMonitor> {
-        AsyncTask::new(AsyncCaptureMonitor::new(
-            self.xcap_monitor.clone(),
-            copy_output_data,
-        ))
+    pub fn capture_image(&self) -> AsyncTask<AsyncCapture> {
+        AsyncTask::new(AsyncCapture::Monitor(self.x_cap_monitor.clone()))
     }
 }

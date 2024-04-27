@@ -1,23 +1,7 @@
 console.time("require");
 const { Window } = require("..");
 console.timeEnd("require");
-const fs = require("fs");
-const path = require("path");
-
-function writeFile(filename, buf) {
-    if (!fs.existsSync("target")) {
-        fs.mkdirSync("target");
-    }
-
-    fs.writeFileSync(path.join("target", filename), buf);
-}
-
-function runWithTime(fn, label) {
-    console.time(label);
-    let result = fn();
-    console.timeEnd(label);
-    return result;
-}
+const { saveImage, runWithTime } = require("./utils");
 
 async function main() {
     const windows = runWithTime(() => Window.all(), "Window.all()");
@@ -41,7 +25,7 @@ async function main() {
             () => item.captureImageSync(true),
             "item.captureImageSync(true);"
         );
-        writeFile(`window-${item.id}.png`, image);
+        saveImage(`window-${item.id}.bmp`, image.toBmpSync());
 
         let captureImagePromise = runWithTime(
             () => item.captureImage(),
@@ -50,9 +34,9 @@ async function main() {
         console.log("item captureImagePromise:", captureImagePromise);
 
         console.time(`await ${item.id} captureImagePromise`);
-        const data = await captureImagePromise;
+        const image2 = await captureImagePromise;
         console.timeLog(`await ${item.id} captureImagePromise`);
-        writeFile(`window-async-${item.id}.png`, data);
+        saveImage(`window-async-${item.id}.bmp`, image2.toBmpSync());
     }
 }
 
