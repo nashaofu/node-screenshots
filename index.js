@@ -224,14 +224,72 @@ switch (platform) {
         }
         break
       case 'arm':
+        if (isMusl()) {
+          localFileExisted = existsSync(
+            join(__dirname, 'node-screenshots.linux-arm-musleabihf.node')
+          )
+          try {
+            if (localFileExisted) {
+              nativeBinding = require('./node-screenshots.linux-arm-musleabihf.node')
+            } else {
+              nativeBinding = require('node-screenshots-linux-arm-musleabihf')
+            }
+          } catch (e) {
+            loadError = e
+          }
+        } else {
+          localFileExisted = existsSync(
+            join(__dirname, 'node-screenshots.linux-arm-gnueabihf.node')
+          )
+          try {
+            if (localFileExisted) {
+              nativeBinding = require('./node-screenshots.linux-arm-gnueabihf.node')
+            } else {
+              nativeBinding = require('node-screenshots-linux-arm-gnueabihf')
+            }
+          } catch (e) {
+            loadError = e
+          }
+        }
+        break
+      case 'riscv64':
+        if (isMusl()) {
+          localFileExisted = existsSync(
+            join(__dirname, 'node-screenshots.linux-riscv64-musl.node')
+          )
+          try {
+            if (localFileExisted) {
+              nativeBinding = require('./node-screenshots.linux-riscv64-musl.node')
+            } else {
+              nativeBinding = require('node-screenshots-linux-riscv64-musl')
+            }
+          } catch (e) {
+            loadError = e
+          }
+        } else {
+          localFileExisted = existsSync(
+            join(__dirname, 'node-screenshots.linux-riscv64-gnu.node')
+          )
+          try {
+            if (localFileExisted) {
+              nativeBinding = require('./node-screenshots.linux-riscv64-gnu.node')
+            } else {
+              nativeBinding = require('node-screenshots-linux-riscv64-gnu')
+            }
+          } catch (e) {
+            loadError = e
+          }
+        }
+        break
+      case 's390x':
         localFileExisted = existsSync(
-          join(__dirname, 'node-screenshots.linux-arm-gnueabihf.node')
+          join(__dirname, 'node-screenshots.linux-s390x-gnu.node')
         )
         try {
           if (localFileExisted) {
-            nativeBinding = require('./node-screenshots.linux-arm-gnueabihf.node')
+            nativeBinding = require('./node-screenshots.linux-s390x-gnu.node')
           } else {
-            nativeBinding = require('node-screenshots-linux-arm-gnueabihf')
+            nativeBinding = require('node-screenshots-linux-s390x-gnu')
           }
         } catch (e) {
           loadError = e
@@ -252,6 +310,7 @@ if (!nativeBinding) {
   throw new Error(`Failed to load native binding`)
 }
 
-const { Screenshots } = nativeBinding
+const { Monitor, Window } = nativeBinding
 
-module.exports.Screenshots = Screenshots
+module.exports.Monitor = Monitor
+module.exports.Window = Window

@@ -29,6 +29,7 @@ jobs:
                     - 14
                     - 16
                     - 18
+                    - 20
         name: build node-desktop:${{ matrix.node }}-${{ matrix.platform }}
         runs-on: ubuntu-latest
         steps:

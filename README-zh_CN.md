@@ -1,6 +1,6 @@
 # 📸 node-screenshots
 
-`node-screenshots` 是一个原生的 node.js 截图库，支持 Mac、Windows 和 Linux 系统，且无需任何依赖。
+`node-screenshots` 是一个基于[XCap](https://github.com/nashaofu/xcap)的原生的 node.js 截图库，支持 Mac、Windows 和 Linux 系统，且无需任何依赖。 支持截图与视频录制（待实现）。
 
 [English](README.md) | 简体中文
 
@@ -8,40 +8,37 @@
 
 ### 操作系统
 
-| 操作系统       | node14 | node16 | node18 |
-| -------------- | ------ | ------ | ------ |
-| Windows x64    | ✓      | ✓      | ✓      |
-| Windows x32    | ✓      | ✓      | ✓      |
-| Windows arm64  | ✓      | ✓      | ✓      |
-| macOS x64      | ✓      | ✓      | ✓      |
-| macOS arm64    | ✓      | ✓      | ✓      |
-| Linux x64 gnu  | ✓      | ✓      | ✓      |
-| Linux x64 musl | ✓      | ✓      | ✓      |
+| 操作系统 | node14 | node16 | node18 | node20 |
+| ---------------- | ------ | ------ | ------ | ------ |
+| Windows x64      | ✓      | ✓      | ✓      | ✓      |
+| Windows x32      | ✓      | ✓      | ✓      | ✓      |
+| Windows arm64    | ✓      | ✓      | ✓      | ✓      |
+| macOS x64        | ✓      | ✓      | ✓      | ✓      |
+| macOS arm64      | ✓      | ✓      | ✓      | ✓      |
+| Linux x64 gnu    | ✓      | ✓      | ✓      | ✓      |
+| Linux x64 musl   | ✓      | ✓      | ✓      | ✓      |
 
 ## 示例
 
 ```ts
 const fs = require("fs");
-const { Screenshots } = require("node-screenshots");
+const { Monitor } = require("node-screenshots");
 
-let capturer = Screenshots.fromPoint(100, 100);
+let monitor = Monitor.fromPoint(100, 100);
 
-console.log(capturer, capturer.id);
+console.log(monitor, monitor.id);
 
-// 同步截图
-let image = capturer.captureSync();
-fs.writeFileSync("./a.png", image);
+let image = monitor.captureImageSync();
+fs.writeFileSync(`${monitor.id}-sync.png`, image);
 
-// 异步截图
-capturer.capture().then((data) => {
+monitor.captureImage().then((data) => {
     console.log(data);
-    fs.writeFileSync(`${capturer.id}.png`, data);
+    fs.writeFileSync(`${monitor.id}.png`, data);
 });
 
-// 获取所有屏幕截图
-let all = Screenshots.all() ?? [];
+let monitors = Monitor.all();
 
-all.forEach((capturer) => {
+monitors.forEach((capturer) => {
     console.log({
         id: capturer.id,
         x: capturer.x,
@@ -52,18 +49,55 @@ all.forEach((capturer) => {
         scaleFactor: capturer.scaleFactor,
         isPrimary: capturer.isPrimary,
     });
-    capturer.captureSync(true);
+});
+```
+
+-   Window
+
+```js
+const fs = require("fs");
+const { Window } = require("node-screenshots");
+
+let windows = Window.all();
+
+windows.forEach((item) => {
+    console.log({
+        id: item.id,
+        x: item.x,
+        y: item.y,
+        width: item.width,
+        height: item.height,
+        rotation: item.rotation,
+        scaleFactor: item.scaleFactor,
+        isPrimary: item.isPrimary,
+    });
+
+    let image = item.captureImageSync();
+    fs.writeFileSync(`${item.id}-sync.png`, image);
+
+    item.captureImage().then((data) => {
+        console.log(data);
+        fs.writeFileSync(`${item.id}.png`, data);
+    });
 });
 ```
 
 ## API
 
--   `Screenshots.fromPoint(x, y)`: 获取指定坐标的截图
--   `Screenshots.all()`: 获取所有截图
--   `screenshots.capture(copyOutputData)`: 异步截取全屏
--   `screenshots.captureSync(copyOutputData)`: 同步截取全屏
--   `screenshots.captureArea(x, y, width, height, copyOutputData)`: 异步截取指定区域
--   `screenshots.captureAreaSync(x, y, width, height, copyOutputData)`: 同步截取指定区域
+TypeScript 类型定义: [index.d.ts](./index.d.ts)
+
+### Monitor
+
+-   `Monitor.fromPoint(x, y)`: 获取指定坐标的屏幕
+-   `Monitor.all()`: 获取所有屏幕
+-   `monitor.captureImageSync(copyOutputData)`: 同步截图
+-   `monitor.captureImage(copyOutputData)`: 异步截图
+
+### Window
+
+-   `Window.all()`: 获取所有窗口
+-   `window.captureImageSync(copyOutputData)`: 同步截图
+-   `window.captureImage(copyOutputData)`: 异步截图
 
 `copyOutputData`: electron 中传递传递相关参数，否则 electron 会崩溃，nodejs 不传或者传递 false，性能会更好，详细信息参考 https://github.com/napi-rs/napi-rs/issues/1346
 
