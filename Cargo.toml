@@ -8,12 +8,14 @@ crate-type = ["cdylib"]
 
 [dependencies]
 # Default enable napi4 feature, see https://nodejs.org/api/n-api.html#node-api-version-matrix
+# Default enable napi4 feature, see https://nodejs.org/api/n-api.html#node-api-version-matrix
 napi = { version = "2.13", default-features = false, features = ["napi4"] }
 napi-derive = "2.13"
-xcap = "0.0.8"
+xcap = "0.0.9"
 
 [build-dependencies]
-napi-build = "2.0"
+napi-build = "2.1.3"
 
 [profile.release]
 lto = true
+strip = "symbols"
