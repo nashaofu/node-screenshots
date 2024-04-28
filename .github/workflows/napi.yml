@@ -108,7 +108,7 @@ jobs:
               uses: actions/setup-node@v4
               if: ${{ !matrix.settings.docker }}
               with:
-                  node-version: 14
+                  node-version: 20
                   check-latest: true
                   cache: yarn
             - name: Install
@@ -145,7 +145,7 @@ jobs:
               uses: actions/setup-node@v4
               if: matrix.settings.target == 'i686-pc-windows-msvc'
               with:
-                  node-version: 16
+                  node-version: 20
                   check-latest: true
                   cache: yarn
                   architecture: x86
@@ -357,7 +357,7 @@ jobs:
             - name: Setup node
               uses: actions/setup-node@v4
               with:
-                  node-version: 14
+                  node-version: 20
                   check-latest: true
                   cache: yarn
             - name: Install dependencies
@@ -395,7 +395,7 @@ jobs:
             - name: Setup node
               uses: actions/setup-node@v4
               with:
-                  node-version: 14
+                  node-version: 20
                   check-latest: true
                   cache: yarn
             - name: Install dependencies
