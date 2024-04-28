@@ -80,6 +80,6 @@ impl Window {
 
     #[napi]
     pub fn capture_image(&self) -> AsyncTask<AsyncCapture> {
-        AsyncTask::new(AsyncCapture::Window(self.x_cap_window.clone()))
+        AsyncTask::new(AsyncCapture::Window(self.x_cap_window.clone().into()))
     }
 }
