@@ -103,9 +103,9 @@ jobs:
         name: build - ${{ matrix.settings.target }}
         runs-on: ${{ matrix.settings.host }}
         steps:
-            - uses: actions/checkout@v3
+            - uses: actions/checkout@v4
             - name: Setup node
-              uses: actions/setup-node@v3
+              uses: actions/setup-node@v4
               if: ${{ !matrix.settings.docker }}
               with:
                   node-version: 14
@@ -118,7 +118,7 @@ jobs:
                   toolchain: stable
                   targets: ${{ matrix.settings.target }}
             - name: Cache cargo
-              uses: actions/cache@v3
+              uses: actions/cache@v4
               with:
                   path: |
                       ~/.cargo/registry/index/
@@ -142,7 +142,7 @@ jobs:
             - name: Install dependencies
               run: yarn install
             - name: Setup node x86
-              uses: actions/setup-node@v3
+              uses: actions/setup-node@v4
               if: matrix.settings.target == 'i686-pc-windows-msvc'
               with:
                   node-version: 16
@@ -163,7 +163,7 @@ jobs:
               if: ${{ !matrix.settings.docker }}
               shell: bash
             - name: Upload artifact
-              uses: actions/upload-artifact@v3
+              uses: actions/upload-artifact@v4
               with:
                   name: bindings-${{ matrix.settings.target }}
                   path: ${{ env.APP_NAME }}.*.node
@@ -186,9 +186,9 @@ jobs:
                     - "20"
         runs-on: ${{ matrix.settings.host }}
         steps:
-            - uses: actions/checkout@v3
+            - uses: actions/checkout@v4
             - name: Setup node
-              uses: actions/setup-node@v3
+              uses: actions/setup-node@v4
               with:
                   node-version: ${{ matrix.node }}
                   check-latest: true
@@ -196,7 +196,7 @@ jobs:
             - name: Install dependencies
               run: yarn install
             - name: Download artifacts
-              uses: actions/download-artifact@v3
+              uses: actions/download-artifact@v4
               with:
                   name: bindings-${{ matrix.settings.target }}
                   path: .
@@ -219,9 +219,9 @@ jobs:
                     - "20"
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v3
+            - uses: actions/checkout@v4
             - name: Setup node
-              uses: actions/setup-node@v3
+              uses: actions/setup-node@v4
               with:
                   node-version: ${{ matrix.node }}
                   check-latest: true
@@ -229,7 +229,7 @@ jobs:
             - name: Install dependencies
               run: yarn install
             - name: Download artifacts
-              uses: actions/download-artifact@v3
+              uses: actions/download-artifact@v4
               with:
                   name: bindings-x86_64-unknown-linux-gnu
                   path: .
@@ -252,9 +252,9 @@ jobs:
                     - "20"
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v3
+            - uses: actions/checkout@v4
             - name: Setup node
-              uses: actions/setup-node@v3
+              uses: actions/setup-node@v4
               with:
                   node-version: ${{ matrix.node }}
                   check-latest: true
@@ -264,7 +264,7 @@ jobs:
                   yarn config set supportedArchitectures.libc "musl"
                   yarn install
             - name: Download artifacts
-              uses: actions/download-artifact@v3
+              uses: actions/download-artifact@v4
               with:
                   name: bindings-x86_64-unknown-linux-musl
                   path: .
@@ -286,9 +286,9 @@ jobs:
     #         - '18'
     #   runs-on: ubuntu-latest
     #   steps:
-    #     - uses: actions/checkout@v3
+    #     - uses: actions/checkout@v4
     #     - name: Download artifacts
-    #       uses: actions/download-artifact@v3
+    #       uses:  actions/download-artifact@v4
     #       with:
     #         name: bindings-aarch64-unknown-linux-gnu
     #         path: .
@@ -320,9 +320,9 @@ jobs:
     #     - build
     #   runs-on: ubuntu-latest
     #   steps:
-    #     - uses: actions/checkout@v3
+    #     - uses: actions/checkout@v4
     #     - name: Download artifacts
-    #       uses: actions/download-artifact@v3
+    #       uses:  actions/download-artifact@v4
     #       with:
     #         name: bindings-aarch64-unknown-linux-musl
     #         path: .
@@ -353,9 +353,9 @@ jobs:
             - build
         runs-on: macos-latest
         steps:
-            - uses: actions/checkout@v3
+            - uses: actions/checkout@v4
             - name: Setup node
-              uses: actions/setup-node@v3
+              uses: actions/setup-node@v4
               with:
                   node-version: 14
                   check-latest: true
@@ -363,19 +363,19 @@ jobs:
             - name: Install dependencies
               run: yarn install
             - name: Download macOS x64 artifact
-              uses: actions/download-artifact@v3
+              uses: actions/download-artifact@v4
               with:
                   name: bindings-x86_64-apple-darwin
                   path: artifacts
             - name: Download macOS arm64 artifact
-              uses: actions/download-artifact@v3
+              uses: actions/download-artifact@v4
               with:
                   name: bindings-aarch64-apple-darwin
                   path: artifacts
             - name: Combine binaries
               run: yarn universal
             - name: Upload artifact
-              uses: actions/upload-artifact@v3
+              uses: actions/upload-artifact@v4
               with:
                   name: bindings-universal-apple-darwin
                   path: ${{ env.APP_NAME }}.*.node
@@ -391,9 +391,9 @@ jobs:
             # - test-linux-aarch64-musl-binding
             - universal-macOS
         steps:
-            - uses: actions/checkout@v3
+            - uses: actions/checkout@v4
             - name: Setup node
-              uses: actions/setup-node@v3
+              uses: actions/setup-node@v4
               with:
                   node-version: 14
                   check-latest: true
@@ -401,7 +401,7 @@ jobs:
             - name: Install dependencies
               run: yarn install
             - name: Download all artifacts
-              uses: actions/download-artifact@v3
+              uses: actions/download-artifact@v4
               with:
                   path: artifacts
             - name: Move artifacts
