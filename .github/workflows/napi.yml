@@ -53,20 +53,25 @@ jobs:
 
           - host: ubuntu-latest
             target: x86_64-unknown-linux-gnu
-            docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-debian
+            docker: node:16-buster
             build: |-
               set -e &&
               apt-get update &&
-              apt-get install libxcb1-dev -y &&
+              apt-get install curl libxcb1-dev -y &&
+              curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y &&
+              . "$HOME/.cargo/env" &&
               yarn build --target x86_64-unknown-linux-gnu
+
           - host: ubuntu-latest
             target: x86_64-unknown-linux-musl
-            docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-alpine
+            docker: node:16-alpine
             build: |-
               set -e &&
               apk update &&
-              apk add libxcb-dev &&
-              yarn build
+              apk add curl build-base libxcb-dev &&
+              curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y &&
+              . "$HOME/.cargo/env" &&
+              yarn build --target x86_64-unknown-linux-musl
 
     name: build - ${{ matrix.settings.target }}
     runs-on: ${{ matrix.settings.host }}
@@ -76,7 +81,7 @@ jobs:
         uses: actions/setup-node@v4
         if: ${{ !matrix.settings.docker }}
         with:
-          node-version: 20
+          node-version: 16
           cache: yarn
       - name: Install
         uses: dtolnay/rust-toolchain@stable
@@ -112,7 +117,7 @@ jobs:
         uses: actions/setup-node@v4
         if: matrix.settings.target == 'i686-pc-windows-msvc'
         with:
-          node-version: 20
+          node-version: 16
           cache: yarn
           architecture: x86
       - name: Build in docker
@@ -146,6 +151,7 @@ jobs:
           - host: windows-latest
             target: x86_64-pc-windows-msvc
         node:
+          - 14
           - 16
           - 18
           - 20
@@ -178,6 +184,7 @@ jobs:
       fail-fast: false
       matrix:
         node:
+          - 14
           - 16
           - 18
           - 20
@@ -209,6 +216,7 @@ jobs:
       fail-fast: false
       matrix:
         node:
+          - 14
           - 16
           - 18
           - 20
@@ -245,7 +253,7 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 16
           cache: yarn
       - name: Install dependencies
         run: yarn install
@@ -281,7 +289,7 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 16
           cache: yarn
       - name: Install dependencies
         run: yarn install
