@@ -26,7 +26,6 @@ jobs:
                     - alpine
                     - debian
                 node:
-                    - 14
                     - 16
                     - 18
                     - 20
