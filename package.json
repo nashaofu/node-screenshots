@@ -37,6 +37,6 @@
   },
   "devDependencies": {
     "@napi-rs/cli": "^2.18.2",
-    "ava": "^6.1.2"
+    "ava": "^5.3.1"
   }
 }
