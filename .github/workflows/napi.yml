@@ -53,15 +53,12 @@ jobs:
 
           - host: ubuntu-latest
             target: x86_64-unknown-linux-gnu
-            docker: node:16-buster
+            docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-debian
             build: |-
               set -e &&
               apt-get update &&
               apt-get install libxcb1-dev curl -y &&
-              curl https://sh.rustup.rs -sSf | bash -s -- -y &&
-              source ~/.bashrc &&
-              yarn build --target x86_64-unknown-linux-gnu &&
-              strip *.node
+              yarn build --target x86_64-unknown-linux-gnu
           - host: ubuntu-latest
             target: x86_64-unknown-linux-musl
             docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-alpine
@@ -69,8 +66,7 @@ jobs:
               set -e &&
               apk update &&
               apk add libxcb-dev &&
-              yarn build &&
-              strip *.node
+              yarn build
 
     name: build - ${{ matrix.settings.target }}
     runs-on: ${{ matrix.settings.host }}
