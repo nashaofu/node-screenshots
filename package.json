@@ -7,7 +7,6 @@
     "index.js",
     "index.d.ts"
   ],
-  "packageManager": "yarn@4.1.1",
   "scripts": {
     "artifacts": "napi artifacts",
     "build": "napi build --platform --release",
