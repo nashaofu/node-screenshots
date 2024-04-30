@@ -8,13 +8,13 @@ ENV DEBIAN_FRONTEND=noninteractive \
   DISPLAY_WIDTH="1280" \
   DISPLAY_HEIGHT="720"
 
-COPY debian-init.sh /usr/local/share/debian-init.sh
-
 RUN apt-get update && \
   apt-get -y install --no-install-recommends xvfb xfce4 dbus-x11 libxcb1 libxrandr2 && \
   apt-get autoclean -y && \
   apt-get autoremove -y  && \
   rm -rf /var/lib/apt/lists/*
+
+COPY debian-init.sh /usr/local/share/debian-init.sh
 
 ENTRYPOINT [ "/usr/local/share/debian-init.sh" ]
 
