@@ -10,7 +10,7 @@ ENV DISPLAY=":0" \
 COPY alpine-init.sh /usr/local/share/alpine-init.sh
 
 RUN apk update && \
-  apk add xvfb libxcb libxrandr
+  apk add xvfb xfce4 libxcb libxrandr
 
 ENTRYPOINT [ "/usr/local/share/alpine-init.sh" ]
 

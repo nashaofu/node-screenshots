@@ -20,6 +20,7 @@ startInBackgroundIfNotRunning() {
 }
 
 startInBackgroundIfNotRunning Xvfb ${DISPLAY} -screen 0 ${DISPLAY_WIDTH}x${DISPLAY_HEIGHT}x24 -dpi 96 -listen tcp -ac
+startInBackgroundIfNotRunning startxfce4
 
 echo $@
 

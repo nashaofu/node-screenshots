@@ -11,7 +11,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
 COPY debian-init.sh /usr/local/share/debian-init.sh
 
 RUN apt-get update && \
-  apt-get -y install --no-install-recommends xvfb libxcb1 libxrandr2 && \
+  apt-get -y install --no-install-recommends xvfb xfce4 dbus-x11 libxcb1 libxrandr2 && \
   apt-get autoclean -y && \
   apt-get autoremove -y  && \
   rm -rf /var/lib/apt/lists/*
