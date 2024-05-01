@@ -1,4 +1,4 @@
-ARG VERSION="18"
+ARG VERSION="16"
 
 FROM node:${VERSION}-alpine
 
@@ -8,7 +8,7 @@ ENV DISPLAY=":0" \
   DISPLAY_HEIGHT="720"
 
 RUN apk update && \
-  apk add xvfb xfce4 libxcb libxrandr
+  apk add procps xvfb xfce4 dbus-x11 libxcb libxrandr
 
 COPY alpine-init.sh /usr/local/share/alpine-init.sh
 
