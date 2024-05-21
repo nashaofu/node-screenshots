@@ -16,7 +16,7 @@ pub struct Monitor {
     /// The screen x coordinate.
     #[napi(readonly)]
     pub x: i32,
-    /// The screen x coordinate.
+    /// The screen y coordinate.
     #[napi(readonly)]
     pub y: i32,
     /// The screen pixel width.
