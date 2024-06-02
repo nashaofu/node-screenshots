@@ -132,3 +132,7 @@ Alpine：
 ```sh
 apk add libxcb libxrandr dbus
 ```
+
+## 相关仓库
+
+- [xcap](https://github.com/nashaofu/xcap) - XCap 是一个使用 Rust 编写的跨平台的屏幕捕获库

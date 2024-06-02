@@ -132,3 +132,7 @@ Alpine:
 ```sh
 apk add libxcb libxrandr dbus
 ```
+
+## Related Repositories
+
+- [xcap](https://github.com/nashaofu/xcap) - XCap is a cross-platform screen capture library written in Rust
