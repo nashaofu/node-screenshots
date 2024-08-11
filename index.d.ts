@@ -24,7 +24,7 @@ export class Monitor {
   readonly name: string
   /** The screen x coordinate. */
   readonly x: number
-  /** The screen x coordinate. */
+  /** The screen y coordinate. */
   readonly y: number
   /** The screen pixel width. */
   readonly width: number
