@@ -12,6 +12,8 @@ pub enum AsyncCapture {
     Window(XCapWindow),
 }
 
+unsafe impl Send for AsyncCapture {}
+
 #[napi]
 impl Task for AsyncCapture {
     type Output = RgbaImage;

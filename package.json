@@ -1,6 +1,6 @@
 {
   "name": "node-screenshots",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "main": "index.js",
   "types": "index.d.ts",
   "files": [
@@ -36,7 +36,7 @@
     "timeout": "3m"
   },
   "devDependencies": {
-    "@napi-rs/cli": "^2.16.3",
+    "@napi-rs/cli": "^2.18.4",
     "ava": "^5.3.1"
   }
 }
