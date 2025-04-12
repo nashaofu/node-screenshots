@@ -9,13 +9,13 @@ async function main() {
   monitors.forEach((item) => {
     console.log(
       "Monitor:",
-      item.id,
-      item.name,
-      [item.x, item.y, item.width, item.height],
-      item.rotation,
-      item.scaleFactor,
-      item.frequency,
-      item.isPrimary
+      item.id(),
+      item.name(),
+      [item.x(), item.y(), item.width(), item.height()],
+      item.rotation(),
+      item.scaleFactor(),
+      item.frequency(),
+      item.isPrimary()
     );
   });
 
@@ -28,7 +28,7 @@ async function main() {
     () => monitor.captureImageSync(),
     "monitor.captureImageSync();"
   );
-  saveImage(`monitor-${monitor.id}.jpeg`, image.toJpegSync());
+  saveImage(`monitor-${monitor.id()}.jpeg`, image.toJpegSync());
 
   let captureImagePromise = runWithTime(
     () => monitor.captureImage(),
@@ -39,7 +39,7 @@ async function main() {
   console.time("await captureImagePromise");
   const image2 = await captureImagePromise;
   console.timeLog("await captureImagePromise");
-  saveImage(`monitor-async-${monitor.id}.png`, image2.toPngSync());
+  saveImage(`monitor-async-${monitor.id()}.png`, image2.toPngSync());
 }
 
 main();

@@ -18,53 +18,68 @@ export declare class Image {
   toRaw(copyOutputData?: boolean | undefined | null): Promise<Buffer>
 }
 export declare class Monitor {
-  /** Unique identifier associated with the screen. */
-  readonly id: number
-  /** Unique identifier associated with the screen. */
-  readonly name: string
-  /** The screen x coordinate. */
-  readonly x: number
-  /** The screen y coordinate. */
-  readonly y: number
-  /** The screen pixel width. */
-  readonly width: number
-  /** The screen pixel height. */
-  readonly height: number
-  /** Can be 0, 90, 180, 270, represents screen rotation in clock-wise degrees. */
-  readonly rotation: number
-  /** Output device's pixel scale factor. */
-  readonly scaleFactor: number
-  /** The screen refresh rate. */
-  readonly frequency: number
-  /** Whether the screen is the main screen */
-  readonly isPrimary: boolean
+  /** List all monitors */
   static all(): Array<Monitor>
+  /** Get the monitor by point */
   static fromPoint(x: number, y: number): Monitor | null
+  /** Unique identifier associated with the screen. */
+  id(): number
+  /** Unique identifier associated with the screen. */
+  name(): string
+  /** The screen x coordinate. */
+  x(): number
+  /** The screen x coordinate. */
+  y(): number
+  /** The screen pixel width. */
+  width(): number
+  /** The screen pixel height. */
+  height(): number
+  /** Can be 0, 90, 180, 270, represents screen rotation in clock-wise degrees. */
+  rotation(): number
+  /** Output device's pixel scale factor. */
+  scaleFactor(): number
+  /** The screen refresh rate. */
+  frequency(): number
+  /** Whether the screen is the main screen */
+  isPrimary(): boolean
+  /** Whether the screen is builtin */
+  isBuiltin(): boolean
+  /** Capture image of the monitor synchronously */
   captureImageSync(): Image
+  /** Capture image of the monitor asynchronously */
   captureImage(): Promise<Image>
 }
 export declare class Window {
-  /** The window id */
-  readonly id: number
-  /** The window app name */
-  readonly appName: string
-  /** The window title */
-  readonly title: string
-  /** The window current monitor */
-  readonly currentMonitor: Monitor
-  /** The window x coordinate. */
-  readonly x: number
-  /** The window x coordinate. */
-  readonly y: number
-  /** The window pixel width. */
-  readonly width: number
-  /** The window pixel height. */
-  readonly height: number
-  /** The window is minimized. */
-  readonly isMinimized: boolean
-  /** The window is maximized. */
-  readonly isMaximized: boolean
+  /** List all windows, sorted by z coordinate. */
   static all(): Array<Window>
+  /** The window id */
+  id(): number
+  /** The window process id */
+  pid(): number
+  /** The window app name */
+  appName(): string
+  /** The window title */
+  title(): string
+  /** The window current monitor */
+  currentMonitor(): Monitor
+  /** The window x coordinate. */
+  x(): number
+  /** The window y coordinate. */
+  y(): number
+  /** The window z coordinate. */
+  z(): number
+  /** The window pixel width. */
+  width(): number
+  /** The window pixel height. */
+  height(): number
+  /** The window is minimized. */
+  isMinimized(): boolean
+  /** The window is maximized. */
+  isMaximized(): boolean
+  /** The window is focused. */
+  isFocused(): boolean
+  /** capture the window image synchronously */
   captureImageSync(): Image
+  /** capture the window image asynchronously */
   captureImage(): Promise<Image>
 }

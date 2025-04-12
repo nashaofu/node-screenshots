@@ -9,28 +9,28 @@ async function main() {
   let image = monitor.captureImageSync();
   console.log("Image:", image.width, image.height);
 
-  saveImage(`image-${monitor.id}.jpeg`, await image.toJpeg());
-  saveImage(`image-${monitor.id}.bmp`, await image.toBmp());
-  saveImage(`image-${monitor.id}.png`, await image.toPng());
+  saveImage(`image-${monitor.id()}.jpeg`, await image.toJpeg());
+  saveImage(`image-${monitor.id()}.bmp`, await image.toBmp());
+  saveImage(`image-${monitor.id()}.png`, await image.toPng());
 
   console.log(await image.toRaw());
 
-  saveImage(`image-sync-${monitor.id}.jpeg`, image.toJpegSync());
-  saveImage(`image-sync-${monitor.id}.bmp`, image.toBmpSync());
-  saveImage(`image-sync-${monitor.id}.png`, image.toPngSync());
+  saveImage(`image-sync-${monitor.id()}.jpeg`, image.toJpegSync());
+  saveImage(`image-sync-${monitor.id()}.bmp`, image.toBmpSync());
+  saveImage(`image-sync-${monitor.id()}.png`, image.toPngSync());
 
   console.log(await image.toRawSync());
 
   saveImage(
-    `image-crop-${monitor.id}.png`,
+    `image-crop-${monitor.id()}.png`,
     (await image.crop(100, 100, 300, 300)).toPngSync()
   );
   saveImage(
-    `image-crop-sync-${monitor.id}.png`,
+    `image-crop-sync-${monitor.id()}.png`,
     image.cropSync(100, 100, 300, 300).toPngSync()
   );
 
-  saveImage(`image-crop-original-${monitor.id}.png`, image.toPngSync());
+  saveImage(`image-crop-original-${monitor.id()}.png`, image.toPngSync());
 
   runWithTime(() => image.toJpegSync(), "image.toJpegSync()");
   runWithTime(() => image.toBmpSync(), "image.toBmpSync()");
