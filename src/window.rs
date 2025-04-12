@@ -7,36 +7,6 @@ use crate::{async_capture::AsyncCapture, Image, Monitor};
 #[derive(Debug, Clone)]
 pub struct Window {
     x_cap_window: XCapWindow,
-    /// The window id
-    #[napi(readonly)]
-    pub id: u32,
-    /// The window app name
-    #[napi(readonly)]
-    pub app_name: String,
-    /// The window title
-    #[napi(readonly)]
-    pub title: String,
-    /// The window current monitor
-    #[napi(readonly)]
-    pub current_monitor: Monitor,
-    /// The window x coordinate.
-    #[napi(readonly)]
-    pub x: i32,
-    /// The window x coordinate.
-    #[napi(readonly)]
-    pub y: i32,
-    /// The window pixel width.
-    #[napi(readonly)]
-    pub width: u32,
-    /// The window pixel height.
-    #[napi(readonly)]
-    pub height: u32,
-    /// The window is minimized.
-    #[napi(readonly)]
-    pub is_minimized: bool,
-    /// The window is maximized.
-    #[napi(readonly)]
-    pub is_maximized: bool,
 }
 
 #[napi]
@@ -44,19 +14,10 @@ impl Window {
     fn new(x_cap_window: &XCapWindow) -> Self {
         Window {
             x_cap_window: x_cap_window.clone(),
-            id: x_cap_window.id(),
-            app_name: x_cap_window.app_name().to_string(),
-            title: x_cap_window.title().to_string(),
-            current_monitor: Monitor::new(&x_cap_window.current_monitor()),
-            x: x_cap_window.x(),
-            y: x_cap_window.y(),
-            width: x_cap_window.width(),
-            height: x_cap_window.height(),
-            is_minimized: x_cap_window.is_minimized(),
-            is_maximized: x_cap_window.is_maximized(),
         }
     }
 
+    /// List all windows, sorted by z coordinate.
     #[napi]
     pub fn all() -> Result<Vec<Window>> {
         let monitors = XCapWindow::all()
@@ -67,7 +28,106 @@ impl Window {
 
         Ok(monitors)
     }
+}
 
+#[napi]
+impl Window {
+    /// The window id
+    #[napi]
+    pub fn id(&self) -> Result<u32> {
+        self.x_cap_window
+            .id()
+            .map_err(|err| Error::from_reason(err.to_string()))
+    }
+    /// The window process id
+    #[napi]
+    pub fn pid(&self) -> Result<u32> {
+        self.x_cap_window
+            .pid()
+            .map_err(|err| Error::from_reason(err.to_string()))
+    }
+    /// The window app name
+    #[napi]
+    pub fn app_name(&self) -> Result<String> {
+        self.x_cap_window
+            .app_name()
+            .map_err(|err| Error::from_reason(err.to_string()))
+    }
+    /// The window title
+    #[napi]
+    pub fn title(&self) -> Result<String> {
+        self.x_cap_window
+            .title()
+            .map_err(|err| Error::from_reason(err.to_string()))
+    }
+    /// The window current monitor
+    #[napi]
+    pub fn current_monitor(&self) -> Result<Monitor> {
+        let monitor = self
+            .x_cap_window
+            .current_monitor()
+            .map_err(|err| Error::from_reason(err.to_string()))?;
+
+        Ok(Monitor::new(&monitor))
+    }
+    /// The window x coordinate.
+    #[napi]
+    pub fn x(&self) -> Result<i32> {
+        self.x_cap_window
+            .x()
+            .map_err(|err| Error::from_reason(err.to_string()))
+    }
+    /// The window y coordinate.
+    #[napi]
+    pub fn y(&self) -> Result<i32> {
+        self.x_cap_window
+            .y()
+            .map_err(|err| Error::from_reason(err.to_string()))
+    }
+    /// The window z coordinate.
+    #[napi]
+    pub fn z(&self) -> Result<i32> {
+        self.x_cap_window
+            .z()
+            .map_err(|err| Error::from_reason(err.to_string()))
+    }
+    /// The window pixel width.
+    #[napi]
+    pub fn width(&self) -> Result<u32> {
+        self.x_cap_window
+            .width()
+            .map_err(|err| Error::from_reason(err.to_string()))
+    }
+    /// The window pixel height.
+    #[napi]
+    pub fn height(&self) -> Result<u32> {
+        self.x_cap_window
+            .height()
+            .map_err(|err| Error::from_reason(err.to_string()))
+    }
+    /// The window is minimized.
+    #[napi]
+    pub fn is_minimized(&self) -> Result<bool> {
+        self.x_cap_window
+            .is_minimized()
+            .map_err(|err| Error::from_reason(err.to_string()))
+    }
+    /// The window is maximized.
+    #[napi]
+    pub fn is_maximized(&self) -> Result<bool> {
+        self.x_cap_window
+            .is_maximized()
+            .map_err(|err| Error::from_reason(err.to_string()))
+    }
+    /// The window is focused.
+    #[napi]
+    pub fn is_focused(&self) -> Result<bool> {
+        self.x_cap_window
+            .is_focused()
+            .map_err(|err| Error::from_reason(err.to_string()))
+    }
+
+    /// capture the window image synchronously
     #[napi]
     pub fn capture_image_sync(&self) -> Result<Image> {
         let rgba_image = self
@@ -78,6 +138,7 @@ impl Window {
         Ok(Image::from(rgba_image))
     }
 
+    /// capture the window image asynchronously
     #[napi]
     pub fn capture_image(&self) -> AsyncTask<AsyncCapture> {
         AsyncTask::new(AsyncCapture::Window(self.x_cap_window.clone()))

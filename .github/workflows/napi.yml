@@ -59,7 +59,7 @@ jobs:
             build: |-
               set -e &&
               apt-get update &&
-              apt-get install curl libxcb1-dev -y &&
+              apt-get install curl pkg-config libxcb1-dev libxrandr-dev libdbus-1-dev -y &&
               curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y &&
               . "$HOME/.cargo/env" &&
               yarn build --target x86_64-unknown-linux-gnu
@@ -69,7 +69,7 @@ jobs:
             build: |-
               set -e &&
               apk update &&
-              apk add curl build-base libxcb-dev &&
+              apk add curl build-base pkgconf clang-dev libxcb-dev libxrandr-dev dbus-dev pipewire-dev &&
               curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y &&
               . "$HOME/.cargo/env" &&
               yarn build --target x86_64-unknown-linux-musl
