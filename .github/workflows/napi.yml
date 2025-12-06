@@ -55,11 +55,11 @@ jobs:
 
           - host: ubuntu-latest
             target: x86_64-unknown-linux-gnu
-            docker: node:16-buster
+            docker: node:16-bullseye
             build: |-
               set -e &&
               apt-get update &&
-              apt-get install curl pkg-config libxcb1-dev libxrandr-dev libdbus-1-dev -y &&
+              apt-get install curl build-essential pkg-config libclang-dev libxcb1-dev libxrandr-dev libdbus-1-dev libpipewire-0.3-dev -y &&
               curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y &&
               . "$HOME/.cargo/env" &&
               yarn build --target x86_64-unknown-linux-gnu
