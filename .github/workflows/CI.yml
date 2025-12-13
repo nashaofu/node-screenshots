@@ -38,6 +38,11 @@ jobs:
         with:
           components: clippy, rustfmt
       - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y pkg-config libclang-dev libxcb1-dev libxrandr-dev libdbus-1-dev libpipewire-0.3-dev
+
+      - name: Install dependencies
         run: yarn install
       - name: Oxlint
         run: yarn lint
@@ -69,17 +74,17 @@ jobs:
 
           - host: ubuntu-latest
             target: x86_64-unknown-linux-gnu
-            build: |-
-              set -e &&
-              apt-get update &&
-              apt-get install curl build-essential pkg-config libclang-dev libxcb1-dev libxrandr-dev libdbus-1-dev libpipewire-0.3-dev -y &&
+            build: |
+              set -e
+              sudo apt-get update
+              sudo apt-get install -y pkg-config libclang-dev libxcb1-dev libxrandr-dev libdbus-1-dev libpipewire-0.3-dev
               yarn build --target x86_64-unknown-linux-gnu --use-napi-cross
           - host: ubuntu-latest
             target: x86_64-unknown-linux-musl
-            build: |-
-              set -e &&
-              apt-get update &&
-              apt-get install curl build-essential pkg-config libclang-dev libxcb1-dev libxrandr-dev libdbus-1-dev libpipewire-0.3-dev -y &&
+            build: |
+              set -e
+              sudo apt-get update
+              sudo apt-get install -y pkg-config libclang-dev libxcb1-dev libxrandr-dev libdbus-1-dev libpipewire-0.3-dev
               yarn build --target x86_64-unknown-linux-musl -x
 
     name: stable - ${{ matrix.settings.target }} - node@22
