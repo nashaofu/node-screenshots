@@ -1,6 +1,6 @@
 ARG VERSION="16"
 
-FROM node:${VERSION}-slim
+FROM node:${VERSION}-bullseye
 
 # Setup environment variables
 ENV DEBIAN_FRONTEND=noninteractive \
