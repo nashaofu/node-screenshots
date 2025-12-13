@@ -1,14 +1,14 @@
-console.time("require");
-const { Window } = require("..");
-console.timeEnd("require");
-const { saveImage, runWithTime } = require("./utils");
+console.time('require')
+const { Window } = require('..')
+console.timeEnd('require')
+const { saveImage, runWithTime } = require('./utils')
 
 async function main() {
-  const windows = runWithTime(() => Window.all(), "Window.all()");
+  const windows = runWithTime(() => Window.all(), 'Window.all()')
 
   for (let item of windows) {
     console.log(
-      "Window:",
+      'Window:',
       item.id(),
       item.appName(),
       item.title(),
@@ -18,26 +18,20 @@ async function main() {
       item.width(),
       item.height(),
       item.isMinimized(),
-      item.isMaximized()
-    );
+      item.isMaximized(),
+    )
 
-    let image = runWithTime(
-      () => item.captureImageSync(true),
-      "item.captureImageSync(true);"
-    );
-    saveImage(`window-${item.id()}.bmp`, image.toBmpSync());
+    let image = runWithTime(() => item.captureImageSync(true), 'item.captureImageSync(true);')
+    saveImage(`window-${item.id()}.bmp`, image.toBmpSync())
 
-    let captureImagePromise = runWithTime(
-      () => item.captureImage(),
-      "item.captureImage()"
-    );
-    console.log("item captureImagePromise:", captureImagePromise);
+    let captureImagePromise = runWithTime(() => item.captureImage(), 'item.captureImage()')
+    console.log('item captureImagePromise:', captureImagePromise)
 
-    console.time(`await ${item.id()} captureImagePromise`);
-    const image2 = await captureImagePromise;
-    console.timeLog(`await ${item.id()} captureImagePromise`);
-    saveImage(`window-async-${item.id()}.bmp`, image2.toBmpSync());
+    console.time(`await ${item.id()} captureImagePromise`)
+    const image2 = await captureImagePromise
+    console.timeLog(`await ${item.id()} captureImagePromise`)
+    saveImage(`window-async-${item.id()}.bmp`, image2.toBmpSync())
   }
 }
 
-main();
+main()
