@@ -8,7 +8,7 @@ use xcap::image::{
   DynamicImage, RgbaImage,
 };
 
-fn bytes_to_buffer(env: Env, bytes: Vec<u8>, copy_output_data: Option<bool>) -> Result<Buffer> {
+fn bytes_to_buffer(_env: Env, bytes: Vec<u8>, _copy_output_data: Option<bool>) -> Result<Buffer> {
   // let buffer = if copy_output_data == Some(true) {
   //     env.create_buffer_copy(bytes)?
   // } else {
