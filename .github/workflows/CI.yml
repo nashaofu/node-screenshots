@@ -191,7 +191,8 @@ jobs:
       - name: Download artifacts
         uses: actions/download-artifact@v6
         with:
-          artifact-ids: bindings-x86_64-unknown-linux-gnu,bindings-x86_64-unknown-linux-musl
+          pattern: bindings-x86_64-unknown-linux-*
+          merge-multiple: true
           path: .
       - name: List packages
         run: ls -R .
