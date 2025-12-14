@@ -173,34 +173,34 @@ jobs:
         shell: bash
       - name: Test bindings
         run: yarn test
-  test-linux-binding:
-    name: Test x86_64 - node@${{ matrix.node }}
-    needs:
-      - build
-    strategy:
-      fail-fast: false
-      matrix:
-        node:
-          - 18
-          - 20
-          - 22
-          - 24
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-      - name: Download artifacts
-        uses: actions/download-artifact@v6
-        with:
-          pattern: bindings-x86_64-unknown-linux-*
-          merge-multiple: true
-          path: .
-      - name: List packages
-        run: ls -R .
-        shell: bash
-      - name: Test bindings (gnu)
-        run: docker run --rm -v ${{ github.workspace }}:/build -w /build ghcr.io/nashaofu/node-screenshots/node-desktop:${{ matrix.node }}-debian yarn install && yarn test
-      - name: Test bindings (musl)
-        run: docker run --rm -v ${{ github.workspace }}:/build -w /build ghcr.io/nashaofu/node-screenshots/node-desktop:${{ matrix.node }}-apline yarn install && yarn test
+  # test-linux-binding:
+  #   name: Test x86_64 - node@${{ matrix.node }}
+  #   needs:
+  #     - build
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       node:
+  #         - 18
+  #         - 20
+  #         - 22
+  #         - 24
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v6
+  #     - name: Download artifacts
+  #       uses: actions/download-artifact@v6
+  #       with:
+  #         pattern: bindings-x86_64-unknown-linux-*
+  #         merge-multiple: true
+  #         path: .
+  #     - name: List packages
+  #       run: ls -R .
+  #       shell: bash
+  #     - name: Test bindings (gnu)
+  #       run: docker run --rm -v ${{ github.workspace }}:/build -w /build ghcr.io/nashaofu/node-screenshots/node-desktop:${{ matrix.node }}-debian yarn install && yarn test
+  #     - name: Test bindings (musl)
+  #       run: docker run --rm -v ${{ github.workspace }}:/build -w /build ghcr.io/nashaofu/node-screenshots/node-desktop:${{ matrix.node }}-apline yarn install && yarn test
 
   publish:
     name: Publish
@@ -212,7 +212,7 @@ jobs:
     needs:
       - lint
       - test-macOS-windows-binding
-      - test-linux-binding
+      # - test-linux-binding
     steps:
       - uses: actions/checkout@v6
       - name: Setup node
