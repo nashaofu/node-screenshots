@@ -79,7 +79,7 @@ jobs:
           - host: ubuntu-latest
             target: x86_64-unknown-linux-musl
             docker: rust:alpine
-            build: bash ./scripts/x86_64-unknown-linux-musl.sh
+            build: ash ./scripts/x86_64-unknown-linux-musl.sh
 
     name: stable - ${{ matrix.settings.target }} - node@22
     runs-on: ${{ matrix.settings.host }}
