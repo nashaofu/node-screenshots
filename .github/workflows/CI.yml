@@ -198,9 +198,9 @@ jobs:
         run: ls -R .
         shell: bash
       - name: Test bindings (gnu)
-        run: docker run --rm -v ${{ github.workspace }}:/build -w /build ghcr.io/nashaofu/node-screenshots/node-desktop:${{ matrix.node }}-debian "yarn install && yarn test"
+        run: docker run --rm -v ${{ github.workspace }}:/build -w /build ghcr.io/nashaofu/node-screenshots/node-desktop:${{ matrix.node }}-debian yarn install && yarn test
       - name: Test bindings (musl)
-        run: docker run --rm -v ${{ github.workspace }}:/build -w /build ghcr.io/nashaofu/node-screenshots/node-desktop:${{ matrix.node }}-apline "yarn install && yarn test"
+        run: docker run --rm -v ${{ github.workspace }}:/build -w /build ghcr.io/nashaofu/node-screenshots/node-desktop:${{ matrix.node }}-apline yarn install && yarn test
 
   publish:
     name: Publish
