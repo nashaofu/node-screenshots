@@ -2,6 +2,14 @@ name: docker-publish
 
 on:
   workflow_dispatch: # 手动触发
+  push:
+    branches:
+      - master
+    tags:
+      - v*.*.*
+  pull_request:
+    branches:
+      - master
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -20,9 +28,10 @@ jobs:
           - alpine
           - debian
         node:
-          - 16
           - 18
           - 20
+          - 22
+          - 24
     name: build node-desktop:${{ matrix.node }}-${{ matrix.platform }}
     runs-on: ubuntu-latest
     steps:

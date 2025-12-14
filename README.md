@@ -23,44 +23,44 @@ English | [简体中文](README-zh_CN.md)
 ### Monitor
 
 ```ts
-const fs = require("fs");
-const { Monitor } = require("node-screenshots");
+const fs = require('fs')
+const { Monitor } = require('node-screenshots')
 
-let monitor = Monitor.fromPoint(100, 100);
+let monitor = Monitor.fromPoint(100, 100)
 
-console.log(monitor, monitor.id());
+console.log(monitor, monitor.id())
 
-let image = monitor.captureImageSync();
-fs.writeFileSync(`${monitor.id()}-sync.png`, image.toPngSync());
+let image = monitor.captureImageSync()
+fs.writeFileSync(`${monitor.id()}-sync.png`, image.toPngSync())
 
 monitor.captureImage().then((data) => {
-  console.log(data);
-  fs.writeFileSync(`${monitor.id()}.jpeg`, data.toJpegSync());
-});
+  console.log(data)
+  fs.writeFileSync(`${monitor.id()}.jpeg`, data.toJpegSync())
+})
 
-const monitors = Monitor.all();
+const monitors = Monitor.all()
 
 monitors.forEach((item) => {
   console.log(
-    "Monitor:",
+    'Monitor:',
     item.id(),
     item.name(),
     [item.x(), item.y(), item.width(), item.height()],
     item.rotation(),
     item.scaleFactor(),
     item.frequency(),
-    item.isPrimary()
-  );
-});
+    item.isPrimary(),
+  )
+})
 ```
 
 ### Window
 
 ```ts
-const fs = require("fs");
-const { Window } = require("node-screenshots");
+const fs = require('fs')
+const { Window } = require('node-screenshots')
 
-let windows = Window.all();
+let windows = Window.all()
 
 windows.forEach((item) => {
   console.log({
@@ -73,17 +73,17 @@ windows.forEach((item) => {
     rotation: item.rotation(),
     scaleFactor: item.scaleFactor(),
     isPrimary: item.isPrimary(),
-  });
+  })
 
-  let image = item.captureImageSync();
-  fs.writeFileSync(`${item.id()}-sync.bmp`, image.toBmpSync());
+  let image = item.captureImageSync()
+  fs.writeFileSync(`${item.id()}-sync.bmp`, image.toBmpSync())
 
   item.captureImage().then(async (data) => {
-    console.log(data);
-    let newImage = await data.crop(10, 10, 10, 10);
-    fs.writeFileSync(`${item.id()}.png`, await newImage.toPng());
-  });
-});
+    console.log(data)
+    let newImage = await data.crop(10, 10, 10, 10)
+    fs.writeFileSync(`${item.id()}.png`, await newImage.toPng())
+  })
+})
 ```
 
 ## API
