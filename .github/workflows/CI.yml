@@ -74,9 +74,11 @@ jobs:
 
           - host: ubuntu-latest
             target: x86_64-unknown-linux-gnu
+            docker: node:16-bullseye
             build: bash ./scripts/x86_64-unknown-linux-gnu.sh
           - host: ubuntu-latest
             target: x86_64-unknown-linux-musl
+            docker: node:16-alpine
             build: bash ./scripts/x86_64-unknown-linux-musl.sh
 
     name: stable - ${{ matrix.settings.target }} - node@22
@@ -104,24 +106,19 @@ jobs:
             .cargo-cache
             target/
           key: ${{ matrix.settings.target }}-cargo-${{ matrix.settings.host }}
-      - uses: mlugg/setup-zig@v2
-        if: ${{ contains(matrix.settings.target, 'musl') }}
-        with:
-          version: 0.14.1
-      - name: Install cargo-zigbuild
-        uses: taiki-e/install-action@v2
-        if: ${{ contains(matrix.settings.target, 'musl') }}
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        with:
-          tool: cargo-zigbuild
       - name: Setup toolchain
         run: ${{ matrix.settings.setup }}
         if: ${{ matrix.settings.setup }}
         shell: bash
       - name: Install dependencies
         run: yarn install
+
+      - name: Build in docker
+        if: ${{ matrix.settings.docker }}
+        run: docker run --rm -v ${{ github.workspace }}:/build -w /build ${{ matrix.settings.docker }} ${{ matrix.settings.build }}
+        shell: bash
       - name: Build
+        if: ${{ !matrix.settings.docker }}
         run: ${{ matrix.settings.build }}
         shell: bash
       - name: Upload artifact
