@@ -74,11 +74,11 @@ jobs:
 
           - host: ubuntu-latest
             target: x86_64-unknown-linux-gnu
-            docker: node:16-bullseye
+            docker: rust:bullseye
             build: bash ./scripts/x86_64-unknown-linux-gnu.sh
           - host: ubuntu-latest
             target: x86_64-unknown-linux-musl
-            docker: node:16-alpine
+            docker: rust:alpine
             build: bash ./scripts/x86_64-unknown-linux-musl.sh
 
     name: stable - ${{ matrix.settings.target }} - node@22
