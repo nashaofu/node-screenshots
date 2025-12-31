@@ -4,7 +4,7 @@ env:
   APP_NAME: node-screenshots
   MACOSX_DEPLOYMENT_TARGET: '10.13'
   CARGO_INCREMENTAL: '1'
-'on':
+on:
   push:
     branches:
       - master
@@ -19,9 +19,11 @@ env:
   pull_request:
     branches:
       - master
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
+
 jobs:
   lint:
     name: Lint
@@ -219,6 +221,7 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: 24
+          registry-url: 'https://registry.npmjs.org'
           cache: yarn
       - name: Install dependencies
         run: yarn install
@@ -236,17 +239,13 @@ jobs:
       - name: Publish
         run: |
           npm config set provenance true
-          if [ -z "$PUBLISH_NEXT" ]; then
-            echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >>~/.npmrc
+          if [ -z "$IS_NEXT" ]; then
             npm publish --access public
           else
-            echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >>~/.npmrc
             npm publish --access public --tag next
           fi
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-          PUBLISH_NEXT: ${{ endsWith(github.ref_name, '-next') }}
+          IS_NEXT: ${{ endsWith(github.ref_name, '-next') }}
       - name: Release drafter
         uses: release-drafter/release-drafter@v5
         env:
