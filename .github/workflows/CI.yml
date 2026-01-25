@@ -82,6 +82,10 @@ jobs:
             target: x86_64-unknown-linux-musl
             docker: node:24-alpine
             build: ash ./scripts/x86_64-unknown-linux-musl.sh
+          - host: ubuntu-latest
+            target: loongarch64-unknown-linux-gnu
+            docker: --platform linux/loong64 ghcr.io/loong64/node:24-trixie
+            build: bash ./scripts/loongarch64-unknown-linux-gnu.sh
 
     name: stable - ${{ matrix.settings.target }} - node@22
     runs-on: ${{ matrix.settings.host }}
@@ -115,6 +119,9 @@ jobs:
       - name: Install dependencies
         run: yarn install
 
+      - name: Set up QEMU
+        if: ${{ matrix.settings.docker }}
+        uses: docker/setup-qemu-action@v3
       - name: Build in docker
         if: ${{ matrix.settings.docker }}
         run: docker run --rm -v ${{ github.workspace }}:/build -w /build ${{ matrix.settings.docker }} ${{ matrix.settings.build }}
