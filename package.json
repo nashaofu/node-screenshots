@@ -1,6 +1,6 @@
 {
   "name": "node-screenshots",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "description": "Zero-dependent. A native nodejs screenshots library for Mac、Windows、Linux.",
   "main": "index.js",
   "repository": {
