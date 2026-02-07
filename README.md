@@ -8,15 +8,17 @@ English | [简体中文](README-zh_CN.md)
 
 ### Operating System
 
-| Operating System | node16 | node18 | node20 |
-| ---------------- | ------ | ------ | ------ |
-| Windows x64      | ✓      | ✓      | ✓      |
-| Windows x32      | ✓      | ✓      | ✓      |
-| Windows arm64    | ✓      | ✓      | ✓      |
-| macOS x64        | ✓      | ✓      | ✓      |
-| macOS arm64      | ✓      | ✓      | ✓      |
-| Linux x64 gnu    | ✓      | ✓      | ✓      |
-| Linux x64 musl   | ✓      | ✓      | ✓      |
+| Operating System  | node16 | node18 | node20 |
+| ----------------- | ------ | ------ | ------ |
+| Windows x64       | ✓      | ✓      | ✓      |
+| Windows x32       | ✓      | ✓      | ✓      |
+| Windows arm64     | ✓      | ✓      | ✓      |
+| macOS x64         | ✓      | ✓      | ✓      |
+| macOS arm64       | ✓      | ✓      | ✓      |
+| Linux x64 gnu     | ✓      | ✓      | ✓      |
+| Linux x64 musl    | ✓      | ✓      | ✓      |
+| Linux arm64 gnu   | ✓      | ✓      | ✓      |
+| Linux loongarch64 | ✓      | ✓      | ✓      |
 
 ## Example
 
