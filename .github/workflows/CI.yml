@@ -254,13 +254,7 @@ jobs:
       - name: Publish
         run: |
           npm config set provenance true
-          if [ -z "$IS_NEXT" ]; then
-            npm publish --access public
-          else
-            npm publish --access public --tag next
-          fi
-        env:
-          IS_NEXT: ${{ endsWith(github.ref_name, '-next') }}
+          npm publish --access public
       - name: Release drafter
         uses: release-drafter/release-drafter@v5
         env:
