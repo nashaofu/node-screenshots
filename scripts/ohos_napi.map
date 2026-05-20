@@ -1,0 +1,9 @@
+{
+  global:
+    napi_register_module_v1;
+  local:
+    napi_*;
+    uv_*;
+    node_*;
+    dlopen;
+};
